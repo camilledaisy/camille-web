@@ -1,0 +1,466 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import BookCover from '../components/BookCover.astro';
+import { asciiBar, bookColor, getBooks, hash, inkFor, stamp, stars, tilt } from '../lib/utils';
+
+/*
+ * All books live in src/data/books.yaml — edit that file, not this one.
+ */
+const books = await getBooks();
+const reading = books.filter((b) => b.data.shelf === 'reading');
+const finished = books
+  .filter((b) => b.data.shelf === 'finished' && b.data.finished)
+  .sort((a, b) => b.data.finished!.valueOf() - a.data.finished!.valueOf());
+const favorites = books.filter((b) => b.data.favorite);
+const want = books.filter((b) => b.data.shelf === 'want');
+const thisYear = finished.filter((b) => b.data.finished!.getUTCFullYear() === new Date().getUTCFullYear()).length;
+---
+
+<Base title="Reading" description="Camille’s bookshelf: currently reading, recently finished, favorites, and the to-read pile.">
+  <div class="wrap">
+    <header class="page-head grid">
+      <div class="ph">
+        <p class="meta">§ the bookshelf</p>
+        <h1>Reading</h1>
+        <p class="lede">
+          A slightly messy shelf of what I’m reading, what I finished, what I’ll never shut up about, and what’s
+          waiting on the nightstand.
+        </p>
+      </div>
+      <pre class="stats meta" aria-label={`${reading.length} reading now, ${thisYear} finished this year, ${want.length} on the to-read pile`}>
+{`+------------------------+
+| reading now ........ ${String(reading.length).padStart(2, ' ')} |
+| finished this yr ... ${String(thisYear).padStart(2, ' ')} |
+| to-read pile ....... ${String(want.length).padStart(2, ' ')} |
+| shelf space left ...  0 |
++------------------------+`}</pre>
+    </header>
+
+    <!-- currently reading -->
+    <section class="section" aria-labelledby="now-h">
+      <SectionHead num="01" id="now-h" title="Currently reading" note="bookmarks in all of these" />
+      <div class="now">
+        {
+          reading.map((book) => (
+            <article class="now-book">
+              <div class="c">
+                <BookCover book={book} size="lg" />
+              </div>
+              <div>
+                <h3>
+                  <em>{book.data.title}</em>
+                </h3>
+                <p class="meta">by {book.data.author}</p>
+                {book.data.progress != null && (
+                  <p class="bar meta">
+                    <span aria-hidden="true">{asciiBar(book.data.progress, 20)}</span>
+                    <span>{book.data.progress}% read</span>
+                  </p>
+                )}
+                {book.data.note && <p class="note">{book.data.note}</p>}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- recently finished -->
+    <section class="section" aria-labelledby="done-h">
+      <SectionHead num="02" id="done-h" title="Recently finished" note="hover a spine ↓" />
+      <ul class="shelf" aria-label="Recently finished books, newest first">
+        {
+          finished.map((book) => {
+            const bg = bookColor(book);
+            const h = Math.round(230 + hash(book.id) * 90);
+            const w = Math.round(46 + hash(book.id + 'w') * 26);
+            return (
+              <li class="spine" tabindex="0" style={`--bg:${bg};--fg:${inkFor(bg)};--h:${h}px;--w:${w}px;--lean:${tilt(book.id, 1.5)}deg`}>
+                <span class="st">{book.data.title}</span>
+                <span class="sa">{book.data.author.split(' ').at(-1)}</span>
+                <div class="pop" role="note">
+                  <p class="pt">
+                    <em>{book.data.title}</em>
+                  </p>
+                  <p class="meta">{book.data.author}</p>
+                  <p class="meta">
+                    finished {stamp(book.data.finished!)}
+                    {book.data.rating && (
+                      <>
+                        {' '}· <span class="stars" aria-label={`${book.data.rating} out of 5`}>{stars(book.data.rating)}</span>
+                      </>
+                    )}
+                  </p>
+                  {book.data.note && <p class="pn">{book.data.note}</p>}
+                  {book.data.thoughts && (
+                    <a href={book.data.thoughts} class="draw meta">
+                      read my thoughts →
+                    </a>
+                  )}
+                </div>
+              </li>
+            );
+          })
+        }
+        <li class="plant" aria-hidden="true">
+          <span class="scribble">(a plant, for company)</span>
+          <pre>{String.raw`   \ | /
+  '.\|/.'
+  --(@)--
+   /.|.\
+  ___|___
+  \     /
+   \___/`}</pre>
+        </li>
+      </ul>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+
+    <!-- favorites -->
+    <section class="section" aria-labelledby="fav-h">
+      <SectionHead num="03" id="fav-h" title="Favorites" note="i will lend you any of these" />
+      <ul class="favs">
+        {
+          favorites.map((book, i) => (
+            <li class="fav" style={`--dy:${Math.round(hash(book.id) * 40)}px`}>
+              <BookCover book={book} size="md" />
+              {i % 2 === 0 && <span class="scribble pick">staff pick!</span>}
+              {book.data.note && <p class="fn">{book.data.note}</p>}
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- want to read -->
+    <section class="section grid" aria-labelledby="want-h">
+      <div class="want-head">
+        <SectionHead num="04" id="want-h" title="Want to read" />
+        <p class="want-lede">
+          The pile. It only ever gets taller. Recommendations welcome — <a href="/about#say-hi">tell me what to add</a>.
+        </p>
+      </div>
+      <ol class="pile">
+        {
+          want.map((book) => {
+            const bg = bookColor(book);
+            return (
+              <li
+                style={`--bg:${bg};--fg:${inkFor(bg)};--x:${Math.round(hash(book.id) * 60 - 30)}px;--w:${Math.round(78 + hash(book.id + 'w') * 22)}%;--r:${tilt(book.id, 1.2)}deg`}
+              >
+                <span class="pt">{book.data.title}</span>
+                <span class="pa">{book.data.author}</span>
+                {book.data.note && <span class="scribble pnote">{book.data.note} →</span>}
+              </li>
+            );
+          })
+        }
+      </ol>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .ph {
+    grid-column: 1 / span 8;
+  }
+  .stats {
+    grid-column: 9 / span 4;
+    align-self: end;
+    justify-self: end;
+    margin: 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    text-transform: none;
+    color: var(--red);
+    transform: rotate(2deg);
+  }
+
+  /* currently reading */
+  .now {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem var(--gutter);
+  }
+  .now-book {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    gap: 1.6rem;
+    align-items: start;
+  }
+  .now-book:nth-child(even) {
+    margin-top: 3.5rem;
+  }
+  .now-book h3 {
+    font-size: 2.3rem;
+    margin-bottom: 0.4rem;
+  }
+  .bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    color: var(--red);
+    margin: 1.2rem 0;
+  }
+  .note {
+    font-size: 1.05rem;
+  }
+
+  /* the shelf of spines */
+  .shelf {
+    list-style: none;
+    margin: 0;
+    padding: 3rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 3px;
+  }
+  .spine {
+    position: relative;
+    flex: 0 0 var(--w);
+    height: var(--h);
+    background: var(--bg);
+    color: var(--fg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 0 0.7rem;
+    box-shadow:
+      inset 3px 0 0 rgb(255 255 255 / 0.12),
+      inset -3px 0 0 rgb(0 0 0 / 0.15);
+    transform: rotate(var(--lean));
+    transform-origin: bottom center;
+    transition: transform 0.4s var(--wobble);
+    outline-offset: 4px;
+  }
+  .spine::before,
+  .spine::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.35;
+  }
+  .spine::before {
+    top: 10px;
+  }
+  .spine::after {
+    bottom: 32px;
+  }
+  .st {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1;
+    max-height: calc(var(--h) - 4rem);
+    overflow: hidden;
+  }
+  .sa {
+    font-family: var(--f-mono);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .spine:hover,
+  .spine:focus-visible {
+    transform: translateY(-22px) rotate(0deg);
+    z-index: 3;
+  }
+  .pop {
+    position: absolute;
+    bottom: 25%;
+    left: calc(100% + 14px);
+    width: 16rem;
+    translate: -8px 0;
+    background: var(--paper-3);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    padding: 0.8rem 0.9rem;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s,
+      translate 0.3s var(--wobble),
+      visibility 0.2s;
+    z-index: 4;
+  }
+  .spine:hover .pop,
+  .spine:focus-visible .pop,
+  .spine:focus-within .pop {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+  }
+  .pop p {
+    margin: 0 0 0.3rem;
+  }
+  .pt {
+    font-family: var(--f-display);
+    font-size: 1.35rem;
+    line-height: 1.05;
+  }
+  .stars {
+    color: var(--red);
+    letter-spacing: 0.1em;
+  }
+  .pn {
+    font-size: 0.92rem;
+    line-height: 1.35;
+    margin-top: 0.5rem !important;
+  }
+  .plant {
+    margin-left: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+  .plant pre {
+    margin: 0;
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    line-height: 1.15;
+    color: var(--green);
+  }
+  .plant .scribble {
+    margin-bottom: 3rem;
+  }
+  .plank {
+    height: 14px;
+    background: var(--ink);
+    margin-top: 0;
+    box-shadow: 0 8px 0 -3px var(--rule);
+  }
+
+  /* favorites — face out, like a bookstore display */
+  .favs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 2rem var(--gutter);
+    align-items: start;
+  }
+  .fav {
+    position: relative;
+    margin-top: var(--dy);
+  }
+  .fav:hover :global(.cover) {
+    transform: rotate(0) scale(1.04);
+  }
+  .pick {
+    position: absolute;
+    top: -1.2rem;
+    right: -0.8rem;
+    transform: rotate(9deg);
+    background: var(--sticky);
+    color: var(--ink);
+    padding: 0 0.4rem;
+    font-size: 1.2rem;
+  }
+  .fn {
+    font-family: var(--f-hand);
+    font-size: 1.25rem;
+    line-height: 1.1;
+    color: var(--ink-soft);
+    margin-top: 0.8rem;
+  }
+
+  /* the to-read pile */
+  .want-head {
+    grid-column: 1 / span 5;
+  }
+  .want-lede {
+    max-width: 30ch;
+  }
+  .pile {
+    grid-column: 7 / span 6;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+  .pile li {
+    position: relative;
+    width: var(--w);
+    translate: var(--x) 0;
+    rotate: var(--r);
+    background: var(--bg);
+    color: var(--fg);
+    padding: 0.7rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    border-bottom: 3px solid rgb(0 0 0 / 0.15);
+    transition: translate 0.4s var(--wobble);
+  }
+  .pile li:hover {
+    translate: calc(var(--x) + 18px) 0;
+  }
+  .pile .pt {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 1.3rem;
+    line-height: 1.1;
+  }
+  .pa {
+    font-family: var(--f-mono);
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .pnote {
+    position: absolute;
+    right: calc(100% + 0.8rem);
+    top: 50%;
+    translate: 0 -50%;
+    white-space: nowrap;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 1100px) {
+    .pnote {
+      position: static;
+      translate: none;
+      display: none;
+    }
+    .favs {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 860px) {
+    .now {
+      grid-template-columns: 1fr;
+    }
+    .now-book:nth-child(even) {
+      margin-top: 0;
+    }
+    .stats {
+      justify-self: start;
+    }
+    .pile li {
+      width: 100%;
+      translate: 0;
+    }
+  }
+  @media (max-width: 560px) {
+    .favs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .now-book {
+      grid-template-columns: 0.7fr 1fr;
+    }
+  }
+</style>

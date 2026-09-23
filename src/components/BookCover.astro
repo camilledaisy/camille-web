@@ -1,0 +1,76 @@
+---
+import { bookColor, inkFor, tilt, type Book } from '../lib/utils';
+
+interface Props {
+  book: Book;
+  size?: 'sm' | 'md' | 'lg';
+  tilted?: boolean;
+}
+const { book, size = 'md', tilted = true } = Astro.props;
+const bg = bookColor(book);
+const fg = inkFor(bg);
+const rot = tilted ? tilt(book.id, 3) : 0;
+---
+
+<div class={`cover ${size}`} style={`--bg:${bg};--fg:${fg};--rot:${rot}deg`}>
+  <span class="t">{book.data.title}</span>
+  <span class="a">{book.data.author}</span>
+  <span class="orn" aria-hidden="true">✦</span>
+</div>
+
+<style>
+  .cover {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    padding: 12% 12% 10% 16%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow:
+      inset 6px 0 0 rgb(0 0 0 / 0.14),
+      inset 7px 0 0 rgb(255 255 255 / 0.12),
+      3px 4px 0 rgb(29 27 24 / 0.18);
+    transform: rotate(var(--rot));
+    transition: transform 0.45s var(--wobble);
+    overflow: hidden;
+  }
+  /* a little wear and tear */
+  .cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .25 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  .t {
+    font-family: var(--f-display);
+    font-size: 1.5em;
+    line-height: 1;
+    font-style: italic;
+  }
+  .a {
+    font-family: var(--f-mono);
+    font-size: 0.62em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .orn {
+    position: absolute;
+    right: 12%;
+    top: 50%;
+    opacity: 0.6;
+  }
+  .sm {
+    font-size: 0.7rem;
+  }
+  .md {
+    font-size: 1rem;
+  }
+  .lg {
+    font-size: 1.35rem;
+  }
+</style>

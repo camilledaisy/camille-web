@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" width="600" height="750">
+<defs>
+<pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><circle cx="4" cy="4" r="1.7" fill="#1d1b18" opacity=".55"/></pattern>
+<pattern id="lines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="2" height="6" fill="#1d1b18" opacity=".35"/></pattern>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>
+</defs>
+<rect width="100%" height="100%" fill="#efe8d9"/>
+<g filter="url(#rough)" style="mix-blend-mode:multiply">
+    <rect x="90" y="110" width="120" height="110" fill="#f2c14e" transform="rotate(-2 150 165)"/><rect x="235" y="110" width="120" height="110" fill="#8fb3c4" transform="rotate(-1 295 165)"/><rect x="380" y="110" width="120" height="110" fill="#d77fa1" transform="rotate(0 440 165)"/><rect x="90" y="250" width="120" height="110" fill="#8fb3c4" transform="rotate(1 150 305)"/><rect x="235" y="250" width="120" height="110" fill="#d77fa1" transform="rotate(2 295 305)"/><rect x="380" y="250" width="120" height="110" fill="#f4efe2" transform="rotate(-2 440 305)"/><rect x="90" y="390" width="120" height="110" fill="#d77fa1" transform="rotate(-1 150 445)"/><rect x="235" y="390" width="120" height="110" fill="#f4efe2" transform="rotate(0 295 445)"/><rect x="380" y="390" width="120" height="110" fill="#f2c14e" transform="rotate(1 440 445)"/><rect x="90" y="530" width="120" height="110" fill="#f4efe2" transform="rotate(2 150 585)"/><rect x="235" y="530" width="120" height="110" fill="#f2c14e" transform="rotate(-2 295 585)"/><rect x="380" y="530" width="120" height="110" fill="#8fb3c4" transform="rotate(-1 440 585)"/>
+    <path d="M150 170 L440 310 L295 590" stroke="#c8391e" stroke-width="6" fill="none"/></g>
+<rect width="100%" height="100%" fill="#fff" filter="url(#grain)"/>
+</svg>

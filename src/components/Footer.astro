@@ -1,0 +1,190 @@
+---
+import { elsewhere, site } from '../site.config';
+
+const garden = String.raw`
+        _                    _
+      _(_)_       wWWWw    _(_)_       @@@@
+     (_)@(_)      (___)   (_)@(_)     @@()@@      .
+       (_)\         Y       (_)\       @@@@      \|/
+          |       \|/          |/       /        \|/
+       \  |/  \   \|/ /     \  |      \|/   \    \|/
+  ,,,,\\\\|//,,,\\\\|//,,,,\\\\|//,,,\\\\|//,,\\\|//,,,,,
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^`;
+
+const built = new Date();
+const builtStamp = `${built.getUTCFullYear()}.${String(built.getUTCMonth() + 1).padStart(2, '0')}.${String(built.getUTCDate()).padStart(2, '0')}`;
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <pre class="garden" aria-hidden="true" data-cursor="it's growing">{garden}</pre>
+
+    <div class="cols">
+      <div class="col sign">
+        <p class="bye">
+          Thanks for wandering in<a href="/secret" class="dot bare" aria-label="a secret">.</a>
+        </p>
+        <p class="meta">
+          last watered {builtStamp} · <span data-visits>first visit?</span>
+        </p>
+      </div>
+
+      <div class="col">
+        <h2 class="meta">elsewhere</h2>
+        <ul>
+          {elsewhere.map((l) => (
+            <li>
+              <a class="draw" href={l.href}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="col">
+        <h2 class="meta">this site</h2>
+        <ul>
+          <li><a class="draw" href="/about#colophon">colophon</a></li>
+          <li><a class="draw" href="/rss.xml">rss feed</a></li>
+          <li><a class="draw" href={`mailto:${site.email}`}>say hi</a></li>
+        </ul>
+      </div>
+
+      <div class="col webring" aria-label="A pretend webring">
+        <h2 class="meta">the slow web ring</h2>
+        <p>
+          <a class="draw" href="#" data-toast="there's no one there yet. want to start a webring?">← prev</a>
+          <span aria-hidden="true">✿</span>
+          <a class="draw" href="#" data-toast="imagine a random website. a good one.">random</a>
+          <span aria-hidden="true">✿</span>
+          <a class="draw" href="#" data-toast="the next site is still being built (by you?)">next →</a>
+        </p>
+      </div>
+    </div>
+
+    <ul class="badges" aria-label="Badges">
+      <li><span class="b b1">made by hand</span></li>
+      <li><span class="b b2">no tracking ✿</span></li>
+      <li><span class="b b3">best viewed w/ eyes</span></li>
+      <li><span class="b b4">est. {site.established}</span></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: clamp(4rem, 10vw, 8rem);
+    padding-bottom: 3rem;
+    font-size: 0.95rem;
+  }
+  .garden {
+    font-family: var(--f-mono);
+    font-size: clamp(0.55rem, 0.4rem + 0.5vw, 0.8rem);
+    line-height: 1.2;
+    color: var(--green);
+    margin: 0 0 0 auto;
+    width: max-content;
+    max-width: 100%;
+    overflow: hidden;
+    transform-origin: bottom center;
+    transition: transform 0.6s var(--wobble);
+  }
+  .garden:hover {
+    transform: skewX(-3deg);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.4fr;
+    gap: 2rem var(--gutter);
+    border-top: 1px solid var(--ink);
+    padding-top: 1.3rem;
+  }
+  .col h2 {
+    margin-bottom: 0.6rem;
+  }
+  .col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: var(--f-mono);
+    font-size: 0.82rem;
+    line-height: 1.8;
+  }
+  .bye {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    line-height: 1;
+    margin-bottom: 0.7rem;
+  }
+  .dot {
+    color: var(--red);
+    display: inline-block;
+    padding: 0 0.2rem;
+  }
+  .dot:hover {
+    transform: scale(2);
+  }
+  .webring p {
+    font-family: var(--f-mono);
+    font-size: 0.82rem;
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .webring span {
+    color: var(--red);
+  }
+  .badges {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  /* 88×31-ish buttons, like the old days */
+  .b {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 88px;
+    height: 31px;
+    font-family: var(--f-mono);
+    font-size: 0.56rem;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--ink);
+    padding: 2px;
+    transition: transform 0.3s var(--wobble);
+  }
+  .b:hover {
+    transform: translateY(-3px) rotate(-3deg);
+  }
+  .b1 {
+    background: var(--red);
+    color: #fff;
+  }
+  .b2 {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .b3 {
+    background: var(--highlight);
+    color: var(--ink);
+  }
+  .b4 {
+    background: var(--paper-3);
+    border-style: dashed;
+  }
+  @media (max-width: 860px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .sign,
+    .webring {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

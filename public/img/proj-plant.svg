@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" width="600" height="750">
+<defs>
+<pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><circle cx="4" cy="4" r="1.7" fill="#1d1b18" opacity=".55"/></pattern>
+<pattern id="lines" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="2" height="6" fill="#1d1b18" opacity=".35"/></pattern>
+<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+<filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>
+</defs>
+<rect width="100%" height="100%" fill="#efe6d2"/>
+<g filter="url(#rough)" style="mix-blend-mode:multiply">
+    <rect x="160" y="80" width="280" height="560" rx="30" fill="#1d1b18"/>
+    <rect x="178" y="110" width="244" height="500" fill="#f4efe2"/>
+    <path d="M300 520 C300 420 300 380 300 330" stroke="#5d7a3a" stroke-width="10" fill="none"/>
+    <ellipse cx="255" cy="380" rx="50" ry="22" fill="#5d7a3a" transform="rotate(-30 255 380)"/>
+    <ellipse cx="345" cy="340" rx="50" ry="22" fill="#5d7a3a" transform="rotate(30 345 340)"/>
+    <rect x="245" y="500" width="110" height="80" fill="#c8391e"/>
+    <rect x="200" y="150" width="120" height="14" fill="#1d1b18"/><rect x="200" y="175" width="80" height="10" fill="#1d1b18" opacity=".4"/></g>
+<rect width="100%" height="100%" fill="#fff" filter="url(#grain)"/>
+</svg>

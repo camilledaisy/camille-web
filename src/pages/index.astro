@@ -1,0 +1,322 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Currently from '../components/Currently.astro';
+import BookCover from '../components/BookCover.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import WritingRow from '../components/WritingRow.astro';
+import Scrapbook from '../components/Scrapbook.astro';
+import { intro, site } from '../site.config';
+import { asciiBar, getBooks, getProjects, getWriting, longDate } from '../lib/utils';
+
+const writing = (await getWriting()).slice(0, 5);
+const allProjects = await getProjects();
+const featured = allProjects.filter((p) => p.data.featured);
+const projects = (featured.length ? featured : allProjects).slice(0, 4);
+const reading = (await getBooks()).filter((b) => b.data.shelf === 'reading');
+const [book, ...alsoReading] = reading;
+
+const today = longDate(new Date()).toLowerCase();
+const letters = [...site.name];
+
+const stampArt = String.raw`.-------------.
+|  since '${site.established.slice(2)}  |
+|  handmade   |
+'-------------'`;
+---
+
+<Base>
+  <div class="wrap">
+    <!-- ───────────── masthead ───────────── -->
+    <section class="mast" aria-labelledby="name">
+      <p class="meta dateline">
+        <span>{site.volume}</span>
+        <span aria-hidden="true">—</span>
+        <span>issue of {today}</span>
+        <span aria-hidden="true">—</span>
+        <span>a personal website</span>
+        <span aria-hidden="true">—</span>
+        <span>written from {site.location}</span>
+      </p>
+
+      <div class="name-row">
+        <h1 id="name" class="name" data-petals data-cursor="click me?">
+          <span class="sr-only">{site.name}</span>
+          <span aria-hidden="true">
+            {letters.map((l, i) => <span class="l" style={`--i:${i}`}>{l}</span>)}
+          </span>
+        </h1>
+        <span class="scribble hi" aria-hidden="true">← that’s me! hi</span>
+        <pre class="ascii-stamp" aria-hidden="true">{stampArt}</pre>
+      </div>
+
+      <div class="grid intro-row">
+        <div class="intro dropcap">
+          {intro.map((p) => <p>{p}</p>)}
+          <p class="meta sig">
+            ↳ more <a class="draw" href="/about">about me</a> · or just{' '}
+            <a class="draw" href="#scrapbook">scroll to the good stuff</a>
+          </p>
+        </div>
+        <div class="currently">
+          <Currently />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── reading + writing ───────────── -->
+    <div class="grid section two">
+      <section class="now-reading" aria-labelledby="reading-h">
+        <SectionHead num="01" id="reading-h" title="Currently reading" href="/reading" more="the shelf →" />
+        {
+          book ? (
+            <div class="book">
+              <a href="/reading" class="bare cover-link" data-cursor="to the shelf">
+                <BookCover book={book} size="lg" />
+              </a>
+              <div class="book-info">
+                <p class="bt">
+                  <em>{book.data.title}</em>
+                </p>
+                <p class="meta">by {book.data.author}</p>
+                {book.data.progress != null && (
+                  <p class="progress meta" aria-label={`${book.data.progress}% read`}>
+                    <span aria-hidden="true">{asciiBar(book.data.progress, 14)}</span> {book.data.progress}%
+                  </p>
+                )}
+                {book.data.note && <p class="bnote">{book.data.note}</p>}
+                {alsoReading.length > 0 && (
+                  <p class="also meta">
+                    also on the nightstand:{' '}
+                    {alsoReading.map((b, i) => (
+                      <>
+                        {i > 0 && ', '}
+                        <em>{b.data.title}</em>
+                      </>
+                    ))}
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p class="scribble">between books right now!</p>
+          )
+        }
+      </section>
+
+      <section class="recent-writing" aria-labelledby="writing-h">
+        <SectionHead num="02" id="writing-h" title="Recent writing" href="/writing" more="the archive →" />
+        <ul class="plain">
+          {writing.map((post) => <WritingRow post={post} showDescription={false} />)}
+        </ul>
+      </section>
+    </div>
+
+    <!-- ───────────── projects ───────────── -->
+    <section class="section" aria-labelledby="projects-h">
+      <SectionHead
+        num="03"
+        id="projects-h"
+        title="Recent projects"
+        note="hover for a peek"
+        href="/projects"
+        more="everything I’ve made →"
+      />
+      <ol class="plain">
+        {projects.map((p, i) => <ProjectRow project={p} index={i} />)}
+      </ol>
+    </section>
+
+    <!-- ───────────── scrapbook ───────────── -->
+    <section class="section" id="scrapbook" aria-labelledby="scrap-h">
+      <SectionHead num="04" id="scrap-h" title="Things I like, lately" note="a scrapbook, basically" />
+      <p class="meta scrap-tools">
+        random images, links & bits I’ve collected ·
+        <button type="button" class="shuffle" data-shuffle=".board .bit">↻ shuffle the pile</button>
+      </p>
+      <Scrapbook />
+    </section>
+  </div>
+</Base>
+
+<style>
+  .plain {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* masthead */
+  .mast {
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+  }
+  .dateline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.6rem;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.5rem;
+  }
+  .name-row {
+    position: relative;
+  }
+  .name {
+    font-size: clamp(6.5rem, 3rem + 17vw, 19rem);
+    font-style: italic;
+    letter-spacing: -0.045em;
+    line-height: 0.82;
+    margin: 0.06em 0 0 -0.04em;
+    user-select: none;
+    width: max-content;
+  }
+  .l {
+    display: inline-block;
+    transition:
+      transform 0.5s var(--wobble),
+      color 0.3s;
+    transition-delay: calc(var(--i) * 35ms);
+  }
+  .name:hover .l {
+    transform: translateY(-0.06em) rotate(-2deg);
+  }
+  .name:hover .l:nth-child(odd) {
+    transform: translateY(0.04em) rotate(3deg);
+    color: var(--red);
+  }
+  .hi {
+    position: absolute;
+    left: clamp(21rem, 60vw, 52rem);
+    top: 22%;
+    font-size: clamp(1.6rem, 1.2rem + 1vw, 2.3rem);
+    transform: rotate(-8deg);
+  }
+  .ascii-stamp {
+    position: absolute;
+    right: 0;
+    bottom: 12%;
+    margin: 0;
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    line-height: 1.2;
+    color: var(--red);
+    transform: rotate(7deg);
+    opacity: 0.85;
+  }
+  .intro-row {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+  .intro {
+    grid-column: 2 / span 6;
+    font-size: clamp(1.25rem, 1.05rem + 0.75vw, 1.7rem);
+    line-height: 1.4;
+  }
+  .sig {
+    margin-top: 1.6rem;
+  }
+  .currently {
+    grid-column: 9 / span 4;
+    margin-top: -4.5rem;
+  }
+
+  /* reading + writing */
+  .two {
+    align-items: start;
+  }
+  .now-reading {
+    grid-column: 1 / span 5;
+  }
+  .recent-writing {
+    grid-column: 7 / span 6;
+    margin-top: 3.5rem;
+  }
+  .book {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: 1.6rem;
+    align-items: start;
+  }
+  .cover-link:hover :global(.cover) {
+    transform: rotate(0deg) translateY(-6px);
+  }
+  .bt {
+    font-family: var(--f-display);
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .progress {
+    color: var(--red);
+    margin: 1rem 0;
+    white-space: nowrap;
+  }
+  .bnote {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  .also {
+    text-transform: none;
+    letter-spacing: 0.02em;
+    border-top: 1px dotted var(--rule);
+    padding-top: 0.7rem;
+  }
+  .also em {
+    font-family: var(--f-body);
+    font-size: 0.9rem;
+    color: var(--ink);
+  }
+
+  /* scrapbook */
+  .scrap-tools {
+    margin: -0.8rem 0 2rem;
+  }
+  .shuffle {
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--red);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    display: inline-block;
+    transition: transform 0.4s var(--wobble);
+  }
+  .shuffle:hover {
+    transform: rotate(-4deg) scale(1.05);
+  }
+
+  @media (max-width: 1100px) {
+    .hi {
+      left: auto;
+      right: 0;
+      top: auto;
+      bottom: -0.5rem;
+    }
+    .ascii-stamp {
+      display: none;
+    }
+  }
+  @media (max-width: 860px) {
+    .currently {
+      margin-top: 2rem;
+      max-width: 30rem;
+    }
+    .recent-writing {
+      margin-top: 1rem;
+    }
+    .name {
+      width: auto;
+    }
+  }
+  @media (max-width: 480px) {
+    .book {
+      grid-template-columns: 0.8fr 1fr;
+      gap: 1rem;
+    }
+    .hi {
+      position: static;
+      display: block;
+      margin-top: 0.4rem;
+    }
+  }
+</style>

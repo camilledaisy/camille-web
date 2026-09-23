@@ -1,0 +1,18 @@
+---
+interface Props {
+  num: string;
+  title: string;
+  href?: string;
+  more?: string;
+  note?: string;
+  id?: string;
+}
+const { num, title, href, more = 'see all →', note, id } = Astro.props;
+---
+
+<header class="sec-head">
+  <span class="meta">§ {num}</span>
+  <h2 id={id}>{title}</h2>
+  {note && <span class="scribble">{note}</span>}
+  {href && <a class="more draw" href={href}>{more}</a>}
+</header>

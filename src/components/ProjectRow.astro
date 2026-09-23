@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  index: number;
+}
+const { project, index } = Astro.props;
+const { title, type, date, summary, image, status } = project.data;
+---
+
+<li class="row" data-filter-item={type}>
+  <a
+    href={`/projects/${project.id}`}
+    class="bare link"
+    data-preview={image}
+    data-cursor="open ↗"
+  >
+    <span class="num meta">{String(index + 1).padStart(3, '0')}</span>
+    <span class="title">{title}</span>
+    <span class="sum">{summary}</span>
+    <span class="type tag">{type}</span>
+    <span class="yr meta">{date.getUTCFullYear()}</span>
+    {status !== 'finished' && <span class="stamp" data-status={status}>{status}</span>}
+  </a>
+</li>
+
+<style>
+  .row {
+    border-bottom: 1px solid var(--rule);
+  }
+  .link {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1.1fr) minmax(0, 1.2fr) 6.5rem 3.5rem;
+    align-items: baseline;
+    gap: 0.4rem 1.2rem;
+    padding: 1rem 0.3rem;
+    position: relative;
+    transition: background-color 0.25s;
+  }
+  .title {
+    font-family: var(--f-display);
+    font-size: clamp(1.7rem, 1.3rem + 1.3vw, 2.4rem);
+    line-height: 1;
+    transition:
+      transform 0.4s var(--wobble),
+      color 0.2s;
+  }
+  .sum {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .yr {
+    text-align: right;
+  }
+  .stamp {
+    position: absolute;
+    right: 4.8rem;
+    top: 0.2rem;
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-color: color-mix(in srgb, var(--highlight) 30%, transparent);
+  }
+  .link:hover .title,
+  .link:focus-visible .title {
+    transform: translateX(0.6rem) skewX(-8deg);
+    color: var(--red);
+  }
+  .link:hover .num {
+    color: var(--red);
+  }
+  @media (max-width: 860px) {
+    .link {
+      grid-template-columns: 2.6rem 1fr auto;
+    }
+    .sum {
+      grid-column: 2 / -1;
+    }
+    .type {
+      grid-column: 2;
+    }
+    .yr {
+      grid-row: 1;
+      grid-column: 3;
+    }
+    .stamp {
+      position: static;
+      grid-column: 3;
+      justify-self: end;
+    }
+  }
+</style>

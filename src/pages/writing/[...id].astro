@@ -1,0 +1,195 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getWriting, longDate, readingTime, stamp } from '../../lib/utils';
+import { site } from '../../site.config';
+
+export async function getStaticPaths() {
+  const posts = await getWriting();
+  return posts.map((post, i) => ({
+    params: { id: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content } = await render(post);
+const { title, date, category, description, note } = post.data;
+const { words, minutes } = readingTime(post.body);
+---
+
+<Base title={title} description={description}>
+  <article class="wrap post">
+    <header class="grid head">
+      <div class="h">
+        <p class="meta kicker">
+          <a class="draw" href={`/writing?f=${encodeURIComponent(category)}`}>{category}</a>
+          <span aria-hidden="true">·</span>
+          <time datetime={date.toISOString()}>{longDate(date)}</time>
+        </p>
+        <h1>{title}</h1>
+        {description && <p class="deck">{description}</p>}
+      </div>
+    </header>
+
+    <div class="grid body">
+      <aside class="margin" aria-label="About this post">
+        <dl class="meta">
+          <dt>filed</dt>
+          <dd>{stamp(date)}</dd>
+          <dt>under</dt>
+          <dd>#{category}</dd>
+          <dt>length</dt>
+          <dd>{words} words · ~{minutes} min</dd>
+        </dl>
+        {note && <p class="scribble mnote">{note}</p>}
+        <a class="draw meta back" href="/writing">← all writing</a>
+      </aside>
+
+      <div class="prose dropcap text">
+        <Content />
+        <p class="fin" aria-hidden="true">~ fin ~</p>
+        <p class="reply meta">
+          Thoughts? <a href={`mailto:${site.email}?subject=Re: ${encodeURIComponent(title)}`}>Reply by email</a> — I
+          read everything.
+        </p>
+      </div>
+    </div>
+
+    <nav class="grid pager" aria-label="More writing">
+      <div class="older">
+        {
+          older && (
+            <a class="bare" href={`/writing/${older.id}`}>
+              <span class="meta">← older</span>
+              <span class="pt">{older.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+      <div class="newer">
+        {
+          newer && (
+            <a class="bare" href={`/writing/${newer.id}`}>
+              <span class="meta">newer →</span>
+              <span class="pt">{newer.data.title}</span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) 2.5rem;
+  }
+  .h {
+    grid-column: 2 / span 9;
+  }
+  .kicker {
+    display: flex;
+    gap: 0.6rem;
+    color: var(--red);
+    margin-bottom: 1.2rem;
+  }
+  h1 {
+    font-size: clamp(2.8rem, 1.8rem + 4.2vw, 6.2rem);
+    font-style: italic;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .deck {
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.6rem);
+    line-height: 1.35;
+    color: var(--ink-soft);
+    max-width: 40ch;
+    margin-top: 1.4rem;
+  }
+  .body {
+    border-top: 1px solid var(--ink);
+    padding-top: 2.5rem;
+  }
+  .margin {
+    grid-column: 1 / span 2;
+    align-self: start;
+    position: sticky;
+    top: 1.5rem;
+  }
+  .margin dl {
+    margin: 0;
+    display: grid;
+    gap: 0.15rem;
+  }
+  .margin dt {
+    color: var(--ink-faint);
+    margin-top: 0.6rem;
+  }
+  .margin dd {
+    margin: 0;
+    color: var(--ink);
+  }
+  .mnote {
+    margin: 1.6rem 0;
+  }
+  .back {
+    display: inline-block;
+    margin-top: 1.5rem;
+  }
+  .text {
+    grid-column: 4 / span 7;
+    max-width: 38em;
+  }
+  .fin {
+    text-align: center;
+    font-family: var(--f-display);
+    font-style: italic;
+    color: var(--red);
+    margin-top: 3rem !important;
+  }
+  .reply {
+    text-transform: none;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+  .pager {
+    margin-top: 5rem;
+    border-top: 1px solid var(--ink);
+    padding-top: 1.2rem;
+  }
+  .older {
+    grid-column: 1 / span 6;
+  }
+  .newer {
+    grid-column: 7 / span 6;
+    text-align: right;
+  }
+  .pager a {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .pt {
+    font-family: var(--f-display);
+    font-size: 1.8rem;
+    line-height: 1.05;
+    transition: color 0.2s;
+  }
+  .pager a:hover .pt {
+    color: var(--red);
+    font-style: italic;
+  }
+  @media (max-width: 860px) {
+    .margin {
+      position: static;
+      order: 2;
+      border-top: 1px dotted var(--rule);
+      padding-top: 1rem;
+      margin-top: 2rem;
+    }
+    .newer {
+      text-align: left;
+    }
+  }
+</style>

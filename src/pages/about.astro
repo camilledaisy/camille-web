@@ -1,0 +1,193 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { elsewhere, site } from '../site.config';
+
+/* This page is plain HTML — edit the words directly below. */
+const facts = [
+  'I keep a list of every bird I’ve seen from a window.',
+  'My first website had a MIDI file that autoplayed. I’m sorry.',
+  'I can’t whistle, but I can do a very convincing owl.',
+  'I think the best UI is a well-organized paper notebook.',
+  'Currently growing: basil, a stubborn fern, and patience.',
+  'I will always stop to read a community bulletin board.',
+];
+---
+
+<Base title="About" description="Who Camille is, what this website is, and how to say hi.">
+  <div class="wrap">
+    <header class="page-head grid">
+      <div class="ph">
+        <p class="meta">§ about · the person behind the curtain</p>
+        <h1>Hello<span class="red">.</span></h1>
+      </div>
+    </header>
+
+    <div class="grid main">
+      <div class="prose dropcap text">
+        <p>
+          I’m {site.name}. By day I design things that live on screens — mostly interfaces, sometimes systems, occasionally
+          a whole app. By night (and early morning, and lunch breaks) I read, write, and make small things for no reason.
+        </p>
+        <p>
+          I’m interested in slowness, handmade software, the history of the web, libraries of all kinds, and the way
+          people make places feel like home. I care a lot about typography and very little about productivity.
+        </p>
+        <p>
+          This website is my attempt at a room of my own on the internet. It’s not a portfolio or a brand. It’s closer to
+          a notebook I’ve decided to leave open on the table. Things will change, break, and grow here.
+        </p>
+        <p><em>(All of this is placeholder text — swap in your real story.)</em></p>
+      </div>
+
+      <figure class="photo portrait">
+        <span class="tape" aria-hidden="true"></span>
+        <img src="/img/print-portrait.svg" alt="A risograph-style placeholder portrait" width="600" height="750" />
+        <figcaption>me, approximately</figcaption>
+      </figure>
+    </div>
+
+    <section class="section grid" aria-labelledby="facts-h">
+      <div class="facts">
+        <SectionHead num="01" id="facts-h" title="Some facts, in no order" />
+        <ol>
+          {facts.map((f) => <li>{f}</li>)}
+        </ol>
+      </div>
+
+      <div class="hi" id="say-hi">
+        <SectionHead num="02" title="Say hi" />
+        <p>
+          I love getting emails from strangers — about a post, a book, a project, or nothing at all. The best way to reach
+          me is <a href={`mailto:${site.email}`}>{site.email}</a>.
+        </p>
+        <ul class="links">
+          {elsewhere.map((l) => (
+            <li>
+              <a class="swap bare" href={l.href}>
+                <span>{l.label}</span>
+                <span aria-hidden="true">{l.label} ↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section grid" id="colophon" aria-labelledby="colo-h">
+      <div class="colo">
+        <SectionHead num="03" id="colo-h" title="Colophon" note="how this place is built" />
+        <dl>
+          <div><dt>built with</dt><dd>Astro, plain CSS, a little JavaScript, and too much fiddling</dd></div>
+          <div><dt>type</dt><dd>Instrument Serif, Newsreader, IBM Plex Mono & Caveat — all from Google Fonts</dd></div>
+          <div><dt>images</dt><dd>my own, or risograph-ish placeholders until I scan the real ones</dd></div>
+          <div><dt>tracking</dt><dd>none. no cookies, no analytics. the visit counter lives only in your browser.</dd></div>
+          <div><dt>inspired by</dt><dd>personal Tumblr themes, GeoCities, literary magazines, zines & every digital garden I’ve wandered into</dd></div>
+          <div><dt>secrets</dt><dd>a few. look closely.</dd></div>
+        </dl>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .ph {
+    grid-column: 1 / span 10;
+  }
+  .red {
+    color: var(--red);
+  }
+  .main {
+    align-items: start;
+  }
+  .text {
+    grid-column: 2 / span 6;
+  }
+  .portrait {
+    grid-column: 9 / span 3;
+    margin-top: -6rem;
+    transform: rotate(3deg);
+    transition: transform 0.5s var(--wobble);
+  }
+  .portrait:hover {
+    transform: rotate(-2deg) scale(1.02);
+  }
+  .facts {
+    grid-column: 1 / span 6;
+  }
+  .facts ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: f;
+  }
+  .facts li {
+    counter-increment: f;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    padding: 0.55rem 0;
+    border-bottom: 1px dotted var(--rule);
+    transition: transform 0.3s var(--wobble);
+  }
+  .facts li::before {
+    content: counter(f, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    color: var(--red);
+    padding-top: 0.35rem;
+  }
+  .facts li:hover {
+    transform: translateX(0.4rem);
+  }
+  .hi {
+    grid-column: 8 / span 5;
+    margin-top: 4rem;
+  }
+  .links {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    font-family: var(--f-mono);
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+  }
+  .colo {
+    grid-column: 3 / span 8;
+  }
+  .colo dl {
+    margin: 0;
+  }
+  .colo dl > div {
+    display: grid;
+    grid-template-columns: 9rem 1fr;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  .colo dt {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    padding-top: 0.3rem;
+  }
+  .colo dd {
+    margin: 0;
+  }
+  @media (max-width: 860px) {
+    .portrait {
+      margin-top: 2rem;
+      max-width: 18rem;
+    }
+    .hi {
+      margin-top: 0;
+    }
+    .colo dl > div {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+</style>

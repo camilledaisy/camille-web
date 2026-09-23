@@ -1,0 +1,212 @@
+---
+import { getCollection } from 'astro:content';
+import { hash, inFileOrder, tilt } from '../lib/utils';
+import raw from '../data/scrapbook.yaml?raw';
+
+const items = inFileOrder(await getCollection('scrapbook'), raw);
+const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4 };
+const host = (href = '') => {
+  try {
+    return new URL(href).hostname.replace(/^www\./, '');
+  } catch {
+    return href;
+  }
+};
+---
+
+<div class="board" id="scrapbook-board">
+  {
+    items.map(({ id, data }) => {
+      const style = `--span:${spans[data.kind]};--rot:${tilt(id, 4)}deg;--dy:${Math.round(hash(id + 'y') * 40 - 10)}px;--dx:${Math.round(hash(id + 'x') * 20 - 10)}px`;
+      return (
+        <div class={`bit ${data.kind}`} style={style}>
+          {data.kind === 'image' && (
+            <figure class="photo">
+              <span class="tape" aria-hidden="true" />
+              <img src={data.src} alt={data.caption ?? ''} loading="lazy" width="600" height="750" />
+              {data.caption && <figcaption>{data.caption}</figcaption>}
+            </figure>
+          )}
+          {data.kind === 'quote' && (
+            <blockquote>
+              <p>“{data.text}”</p>
+              {data.caption && <cite class="meta">— {data.caption}</cite>}
+            </blockquote>
+          )}
+          {data.kind === 'link' && (
+            <a href={data.href} class="bare label" data-cursor="visit ↗" rel="noopener">
+              <span class="lt">{data.text} ↗</span>
+              <span class="meta">{data.caption ?? host(data.href)}</span>
+            </a>
+          )}
+          {data.kind === 'note' && <p class="sticky">{data.text}</p>}
+          {data.kind === 'swatch' && (
+            <div class="chip">
+              <span class="c" style={`background:${data.color}`} />
+              <span class="meta">{data.color}</span>
+              <span class="ct">{data.text}</span>
+            </div>
+          )}
+          {data.kind === 'ticket' && (
+            <div class="stub">
+              <span class="meta">no. {String(Math.floor(hash(id) * 90000) + 10000)}</span>
+              <span class="tt">{data.text}</span>
+              {data.caption && <span class="scribble">{data.caption}</span>}
+            </div>
+          )}
+        </div>
+      );
+    })
+  }
+</div>
+
+<style>
+  .board {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: 2.2rem var(--gutter);
+    align-items: start;
+    padding-block: 1rem 2rem;
+  }
+  .bit {
+    grid-column: span var(--span);
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+    transition: transform 0.5s var(--wobble);
+    position: relative;
+  }
+  .bit:hover,
+  .bit:focus-within {
+    transform: translate(var(--dx), calc(var(--dy) - 6px)) rotate(0deg) scale(1.03);
+    z-index: 5;
+  }
+
+  blockquote {
+    margin: 0;
+    background: var(--paper-3);
+    padding: 1.4rem 1.4rem 2rem;
+    box-shadow: var(--shadow);
+    /* torn bottom edge */
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 94% 97%, 87% 93%, 79% 99%, 70% 94%, 61% 98%, 52% 93%, 43% 99%, 34% 94%, 25% 98%, 16% 93%, 8% 99%, 0 94%);
+  }
+  blockquote p {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+  }
+  cite {
+    font-style: normal;
+  }
+
+  /* label-maker strip */
+  .label {
+    display: block;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.8rem 1rem;
+    box-shadow: var(--shadow);
+  }
+  .label .lt {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.15);
+  }
+  .label .meta {
+    color: var(--highlight);
+    display: block;
+    margin-top: 0.5rem;
+    text-transform: none;
+  }
+  .label:hover .lt {
+    text-decoration: underline wavy var(--red) 1px;
+    text-underline-offset: 0.3em;
+  }
+
+  .sticky {
+    margin: 0;
+    background: var(--sticky);
+    color: var(--ink);
+    aspect-ratio: 1;
+    padding: 1rem;
+    font-family: var(--f-hand);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    box-shadow:
+      var(--shadow),
+      inset 0 -18px 18px -18px rgb(0 0 0 / 0.2);
+  }
+
+  .chip {
+    display: flex;
+    flex-direction: column;
+    background: var(--paper-3);
+    padding: 8px 8px 12px;
+    border: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+  }
+  .chip .c {
+    aspect-ratio: 1;
+    margin-bottom: 0.6rem;
+  }
+  .ct {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    margin-top: 0.2rem;
+  }
+
+  /* ticket stub with punched edges */
+  .stub {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.1rem 1.6rem;
+    background: color-mix(in srgb, var(--red) 14%, var(--paper-3));
+    border: 1.5px dashed color-mix(in srgb, var(--red) 70%, transparent);
+    mask: radial-gradient(circle 10px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 10px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+    box-shadow: var(--shadow);
+  }
+  .tt {
+    font-family: var(--f-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+  .stub .scribble {
+    align-self: flex-end;
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 1000px) {
+    .board {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .bit {
+      grid-column: span 3;
+    }
+    .note,
+    .swatch {
+      grid-column: span 2;
+    }
+  }
+  @media (max-width: 560px) {
+    .board {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.6rem 1rem;
+    }
+    .bit {
+      grid-column: span 2;
+    }
+    .note,
+    .swatch {
+      grid-column: span 1;
+    }
+  }
+</style>

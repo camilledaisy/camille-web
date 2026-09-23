@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import WritingRow from '../../components/WritingRow.astro';
+import { getWriting } from '../../lib/utils';
+
+/*
+ * To add a post: create a new .md file in src/content/writing/
+ * (copy an existing one and change the top part). That's it.
+ */
+const posts = await getWriting();
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const count = (c: string) => posts.filter((p) => p.data.category === c).length;
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+---
+
+<Base title="Writing" description="Essays, personal notes, book thoughts, cultural commentary, and random thoughts.">
+  <div class="wrap">
+    <header class="page-head grid">
+      <div class="ph">
+        <p class="meta">§ the archive · {posts.length} entries and counting</p>
+        <h1>Writing</h1>
+        <p class="lede">
+          Essays, personal notes, book thoughts, cultural commentary, and things I said out loud to no one. Some are
+          finished. Most are not.
+        </p>
+      </div>
+      <p class="scribble side" aria-hidden="true">
+        ↙ everything is<br />a draft, really
+      </p>
+    </header>
+
+    <div class="filters" data-filters="#archive" role="group" aria-label="Filter by category">
+      <span class="meta">filter:</span>
+      <button type="button" data-value="all" aria-pressed="true">all <sup>{posts.length}</sup></button>
+      {
+        categories.map((c) => (
+          <button type="button" data-value={c} aria-pressed="false">
+            {c} <sup>{count(c)}</sup>
+          </button>
+        ))
+      }
+    </div>
+
+    <div id="archive" class="archive">
+      {
+        years.map((year) => (
+          <section class="year grid" data-filter-group aria-labelledby={`y-${year}`}>
+            <h2 id={`y-${year}`} class="yr">
+              {year}
+            </h2>
+            <ul class="list">
+              {posts
+                .filter((p) => p.data.date.getUTCFullYear() === year)
+                .map((post) => (
+                  <WritingRow post={post} />
+                ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <pre class="ascii-end meta" aria-hidden="true">{`
+    ~ end of the archive (for now) ~
+         _
+       _(_)_
+      (_)@(_)
+        (_)\\
+           |
+    `}</pre>
+  </div>
+</Base>
+
+<style>
+  .ph {
+    grid-column: 1 / span 8;
+  }
+  .side {
+    grid-column: 10 / span 3;
+    align-self: end;
+    font-size: 1.8rem;
+    transform: rotate(-6deg);
+  }
+  .filters {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 0.6rem 0;
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--paper);
+  }
+  .year {
+    padding-block: 1rem 2.5rem;
+  }
+  .yr {
+    grid-column: 1 / span 2;
+    font-size: clamp(3rem, 2rem + 4vw, 6rem);
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ink);
+    position: sticky;
+    top: 4.5rem;
+    align-self: start;
+  }
+  .list {
+    grid-column: 3 / span 10;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .ascii-end {
+    text-align: center;
+    color: var(--green);
+    text-transform: none;
+    margin-top: 3rem;
+  }
+  @media (max-width: 860px) {
+    .side {
+      display: none;
+    }
+    .yr {
+      position: static;
+    }
+  }
+</style>

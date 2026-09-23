@@ -1,0 +1,84 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { stamp, tilt } from '../lib/utils';
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+  showDescription?: boolean;
+}
+const { post, showDescription = true } = Astro.props;
+const { title, date, category, description, note } = post.data;
+---
+
+<li class="entry" data-filter-item={category}>
+  <time class="meta" datetime={date.toISOString()}>{stamp(date)}</time>
+  <div class="body">
+    <a href={`/writing/${post.id}`} class="title" data-cursor="read ✎">{title}</a>
+    {
+      note && (
+        <span class="scribble note" style={`--r:${tilt(post.id, 5)}deg`}>
+          ← {note}
+        </span>
+      )
+    }
+    {showDescription && description && <p class="desc">{description}</p>}
+  </div>
+  <span class="tag cat">{category}</span>
+</li>
+
+<style>
+  .entry {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr 7.5rem;
+    gap: 0.3rem 1.2rem;
+    align-items: baseline;
+    padding: 0.9rem 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  time {
+    color: var(--ink-faint);
+  }
+  .title {
+    font-family: var(--f-display);
+    font-size: clamp(1.45rem, 1.2rem + 0.9vw, 2rem);
+    line-height: 1.05;
+    text-decoration-thickness: 1px;
+    text-decoration-color: var(--rule);
+  }
+  .title:hover {
+    text-decoration-color: var(--red);
+  }
+  .note {
+    font-size: 1.25rem;
+    margin-left: 0.6rem;
+    transform: rotate(var(--r));
+    white-space: nowrap;
+  }
+  .desc {
+    margin: 0.35rem 0 0;
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+  .cat {
+    text-align: right;
+  }
+  .entry:hover time {
+    color: var(--red);
+  }
+  @media (max-width: 640px) {
+    .entry {
+      grid-template-columns: 1fr auto;
+    }
+    .body {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .note {
+      white-space: normal;
+      margin-left: 0;
+      display: block;
+      margin-top: 0.3rem;
+    }
+  }
+</style>

@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────
+#  THE SCRAPBOOK  (the collage at the bottom of the homepage)
+#
+#  kinds:
+#    image   → src (+ caption)           a taped-in photo
+#    quote   → text (+ caption = who)    a torn-out quote
+#    link    → text + href (+ caption)   a link you love
+#    note    → text                      a sticky note
+#    swatch  → color + text              a paint chip
+#    ticket  → text (+ caption)          a ticket stub
+#
+#  Order matters: things are placed in the order they appear here.
+#  Images go in /public/img/ and are referenced like /img/my-photo.jpg
+# ─────────────────────────────────────────────────────────────
+
+- id: window-light
+  kind: image
+  src: /img/print-window.svg
+  caption: 4pm window light, sept
+
+- id: quote-dillard
+  kind: quote
+  text: How we spend our days is, of course, how we spend our lives.
+  caption: Annie Dillard
+
+- id: link-poolsuite
+  kind: link
+  text: a website that is just a very nice radio
+  href: https://www.radio.garden/
+  caption: radio.garden
+
+- id: sticky-1
+  kind: note
+  text: remember to buy more index cards!! and film
+
+- id: swatch-sept
+  kind: swatch
+  color: "#c8391e"
+  text: color of the month — tomato, cooked down
+
+- id: harbor
+  kind: image
+  src: /img/print-harbor.svg
+  caption: the harbor, almost blue
+
+- id: ticket-cinema
+  kind: ticket
+  text: "ADMIT ONE · Paris, Texas (1984)"
+  caption: row F, seat 11
+
+- id: link-library
+  kind: link
+  text: an archive of old library catalog cards
+  href: https://www.loc.gov/
+  caption: loc.gov
+
+- id: flowers
+  kind: image
+  src: /img/print-flowers.svg
+  caption: market flowers, $6
+
+- id: sticky-2
+  kind: note
+  text: "a website can be a garden, not a billboard"
+
+- id: quote-oliver
+  kind: quote
+  text: Instructions for living a life. Pay attention. Be astonished. Tell about it.
+  caption: Mary Oliver
+
+- id: link-hundred-rabbits
+  kind: link
+  text: two artists living on a sailboat, making small software
+  href: https://100r.co/
+  caption: 100r.co
