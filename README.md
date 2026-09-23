@@ -1,4 +1,4 @@
-# ✿ camille’s corner
+# ✿ daisy’s corner
 
 A personal website: part digital garden, part scrapbook, part blog. Built with [Astro](https://astro.build), plain CSS and a sprinkle of JavaScript.
 

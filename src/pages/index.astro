@@ -159,6 +159,10 @@ const stampArt = String.raw`.-------------.
   }
   .name-row {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: clamp(1rem, 3vw, 2.5rem);
   }
   .name {
     font-size: clamp(6.5rem, 3rem + 17vw, 19rem);
@@ -184,9 +188,7 @@ const stampArt = String.raw`.-------------.
     color: var(--red);
   }
   .hi {
-    position: absolute;
-    left: clamp(21rem, 60vw, 52rem);
-    top: 22%;
+    margin-top: clamp(2.5rem, 6vw, 5.5rem);
     font-size: clamp(1.6rem, 1.2rem + 1vw, 2.3rem);
     transform: rotate(-8deg);
   }
@@ -203,7 +205,7 @@ const stampArt = String.raw`.-------------.
     opacity: 0.85;
   }
   .intro-row {
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(2.5rem, 4vw, 3.5rem);
     align-items: start;
   }
   .intro {
@@ -286,12 +288,6 @@ const stampArt = String.raw`.-------------.
   }
 
   @media (max-width: 1100px) {
-    .hi {
-      left: auto;
-      right: 0;
-      top: auto;
-      bottom: -0.5rem;
-    }
     .ascii-stamp {
       display: none;
     }
@@ -314,8 +310,6 @@ const stampArt = String.raw`.-------------.
       gap: 1rem;
     }
     .hi {
-      position: static;
-      display: block;
       margin-top: 0.4rem;
     }
   }

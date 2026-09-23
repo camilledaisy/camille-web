@@ -6,11 +6,11 @@
  */
 
 export const site = {
-  name: 'Camille',
+  name: 'Daisy',
   // shown in the browser tab after each page title
-  title: 'Camille — a personal corner of the internet',
+  title: 'Daisy — a personal corner of the internet',
   description:
-    'Camille’s digital garden: things made, things read, things half-thought.',
+    'Daisy’s digital garden: things made, things read, things half-thought.',
   // shows up in the masthead. bump it whenever you feel like the site has had a new era
   volume: 'vol. 01',
   established: '2026',
@@ -18,12 +18,12 @@ export const site = {
   location: 'somewhere with good light',
   // used for the little clock in the header. find yours at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   timezone: 'America/New_York',
-  email: 'hello@camille.example.com',
+  email: 'hello@daisy.example.com',
 };
 
 /** The paragraph on the homepage, right under your name. */
 export const intro = [
-  'Hi, I’m Camille. I design things for screens, read too many books at once, and keep a running list of small beautiful things I notice.',
+  'Hi, I’m Daisy. I design things for screens, read too many books at once, and keep a running list of small beautiful things I notice.',
   'This is my corner of the internet — part notebook, part scrapbook, part archive of things I’ve made. Nothing here is finished. That’s kind of the point.',
 ];
 
@@ -54,7 +54,7 @@ export const nav = [
 
 /** Elsewhere on the internet — shows up in the footer and on the about page. */
 export const elsewhere = [
-  { label: 'email', href: 'mailto:hello@camille.example.com' },
+  { label: 'email', href: 'mailto:hello@daisy.example.com' },
   { label: 'are.na', href: 'https://www.are.na/' },
   { label: 'github', href: 'https://github.com/camilledaisy' },
   { label: 'goodreads', href: 'https://www.goodreads.com/' },
