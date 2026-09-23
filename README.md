@@ -71,7 +71,7 @@ The write-up / case study goes here.
 
 ### Books
 
-In `src/data/books.yaml`, every book has a `shelf`: `reading`, `finished`, or `want`. Add `favorite: true` to put it on the Favorites shelf. Finished a book? Change its shelf to `finished` and add `finished: 2026-10-01` (and a `rating` if you like). The comment at the top of the file lists every option.
+In `src/data/books.yaml`, every book has a `shelf`: `reading` (now), `finished` (recently finished — newest at the top), `read` (a while ago), or `want` (the to-read pile). Add `favorite: true` to put any book on the Favorites shelf. Finished a book? Change its shelf from `reading` to `finished` and move it to the top of that group. Dates (`finished: 2026-10-01`) and a `rating` are optional. The comment at the top of the file lists every option.
 
 ### The “Currently” box
 

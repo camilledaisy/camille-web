@@ -9,12 +9,13 @@ import { asciiBar, bookColor, getBooks, hash, inkFor, stamp, stars, tilt } from 
  */
 const books = await getBooks();
 const reading = books.filter((b) => b.data.shelf === 'reading');
-const finished = books
-  .filter((b) => b.data.shelf === 'finished' && b.data.finished)
-  .sort((a, b) => b.data.finished!.valueOf() - a.data.finished!.valueOf());
+// newest first: sorted by `finished` date if every book has one, otherwise in file order
+const finishedShelf = books.filter((b) => b.data.shelf === 'finished');
+const finished = finishedShelf.every((b) => b.data.finished)
+  ? finishedShelf.sort((a, b) => b.data.finished!.valueOf() - a.data.finished!.valueOf())
+  : finishedShelf;
 const favorites = books.filter((b) => b.data.favorite);
 const want = books.filter((b) => b.data.shelf === 'want');
-const thisYear = finished.filter((b) => b.data.finished!.getUTCFullYear() === new Date().getUTCFullYear()).length;
 ---
 
 <Base title="Reading" description="Daisy’s bookshelf: currently reading, recently finished, favorites, and the to-read pile.">
@@ -28,10 +29,10 @@ const thisYear = finished.filter((b) => b.data.finished!.getUTCFullYear() === ne
           waiting on the nightstand.
         </p>
       </div>
-      <pre class="stats meta" aria-label={`${reading.length} reading now, ${thisYear} finished this year, ${want.length} on the to-read pile`}>
+      <pre class="stats meta" aria-label={`${reading.length} reading now, ${finished.length} recently finished, ${want.length} on the to-read pile`}>
 {`+------------------------+
 | reading now ........ ${String(reading.length).padStart(2, ' ')} |
-| finished this yr ... ${String(thisYear).padStart(2, ' ')} |
+| recently done ...... ${String(finished.length).padStart(2, ' ')} |
 | to-read pile ....... ${String(want.length).padStart(2, ' ')} |
 | shelf space left ...  0 |
 +------------------------+`}</pre>
@@ -73,25 +74,30 @@ const thisYear = finished.filter((b) => b.data.finished!.getUTCFullYear() === ne
         {
           finished.map((book) => {
             const bg = bookColor(book);
-            const h = Math.round(230 + hash(book.id) * 90);
-            const w = Math.round(46 + hash(book.id + 'w') * 26);
+            const surname = book.data.author.split(' ').at(-1)!;
+            // a little random, but always tall/wide enough for the title and surname
+            const h = Math.round(Math.max(230 + hash(book.id) * 90, book.data.title.length * 7.5 + 90));
+            const w = Math.round(Math.max(46 + hash(book.id + 'w') * 26, surname.length * 5.6 + 14));
             return (
               <li class="spine" tabindex="0" style={`--bg:${bg};--fg:${inkFor(bg)};--h:${h}px;--w:${w}px;--lean:${tilt(book.id, 1.5)}deg`}>
                 <span class="st">{book.data.title}</span>
-                <span class="sa">{book.data.author.split(' ').at(-1)}</span>
+                <span class="sa">{surname}</span>
                 <div class="pop" role="note">
                   <p class="pt">
                     <em>{book.data.title}</em>
                   </p>
                   <p class="meta">{book.data.author}</p>
-                  <p class="meta">
-                    finished {stamp(book.data.finished!)}
-                    {book.data.rating && (
-                      <>
-                        {' '}· <span class="stars" aria-label={`${book.data.rating} out of 5`}>{stars(book.data.rating)}</span>
-                      </>
-                    )}
-                  </p>
+                  {(book.data.finished || book.data.rating) && (
+                    <p class="meta">
+                      {book.data.finished && `finished ${stamp(book.data.finished)}`}
+                      {book.data.finished && book.data.rating && ' · '}
+                      {book.data.rating && (
+                        <span class="stars" aria-label={`${book.data.rating} out of 5`}>
+                          {stars(book.data.rating)}
+                        </span>
+                      )}
+                    </p>
+                  )}
                   {book.data.note && <p class="pn">{book.data.note}</p>}
                   {book.data.thoughts && (
                     <a href={book.data.thoughts} class="draw meta">

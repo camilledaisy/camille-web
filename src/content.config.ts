@@ -52,7 +52,8 @@ const books = defineCollection({
   schema: z.object({
     title: z.string(),
     author: z.string(),
-    shelf: z.enum(['reading', 'finished', 'want']),
+    // reading = now · finished = recently finished · read = a while ago · want = to-read pile
+    shelf: z.enum(['reading', 'finished', 'read', 'want']),
     favorite: z.boolean().default(false),
     progress: z.number().min(0).max(100).optional(),
     finished: z.coerce.date().optional(),

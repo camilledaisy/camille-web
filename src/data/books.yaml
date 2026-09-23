@@ -3,12 +3,16 @@
 #
 #  Every book is one entry. The only rules:
 #    - `id` must be unique (any short slug works)
-#    - `shelf` is one of: reading | finished | want
+#    - `shelf` is one of:
+#        reading   → currently reading
+#        finished  → recently finished (put the newest at the top)
+#        read      → read a while ago (use with favorite: true)
+#        want      → the to-read pile
 #
 #  Optional things:
 #    favorite: true      → also shows up on the Favorites shelf
 #    progress: 0–100     → for books you're currently reading
-#    finished: 2026-08-14
+#    finished: 2026-08-14   → if every recent book has one, they're sorted by it
 #    rating: 1–5
 #    note: "a sentence or two"
 #    color: "#b8452c"    → cover/spine color (leave out and one is picked)
@@ -16,72 +20,63 @@
 # ─────────────────────────────────────────────────────────────
 
 # ── currently reading ──
-- id: the-waves
-  title: The Waves
-  author: Virginia Woolf
+- id: kitchen-confidential
+  title: Kitchen Confidential
+  author: Anthony Bourdain
   shelf: reading
-  progress: 62
-  color: "#2f4a6d"
-  note: Reading this one a few pages at a time, like a very slow tide.
+  progress: 55
+  color: "#1f1d1a"
 
-- id: braiding-sweetgrass
-  title: Braiding Sweetgrass
-  author: Robin Wall Kimmerer
+- id: the-design-of-everyday-things
+  title: The Design of Everyday Things
+  author: Don Norman
   shelf: reading
-  progress: 28
-  color: "#5d7a3a"
-  note: Keeping it on the nightstand. It makes me want to go outside.
+  color: "#e0c35a"
 
-# ── recently finished ──
-- id: the-days-of-abandonment
-  title: The Days of Abandonment
-  author: Elena Ferrante
+# ── recently finished (newest at the top) ──
+- id: martyr
+  title: Martyr!
+  author: Kaveh Akbar
   shelf: finished
-  finished: 2026-09-02
-  rating: 5
-  color: "#b8452c"
-  note: Read it in two sittings. Felt like being held underwater, beautifully.
-  thoughts: /writing/on-rereading
+  color: "#c8391e"
 
+- id: circe
+  title: Circe
+  author: Madeline Miller
+  shelf: finished
+  color: "#c8912e"
+
+- id: east-of-eden
+  title: East of Eden
+  author: John Steinbeck
+  shelf: finished
+  color: "#5d7a3a"
+
+- id: the-little-prince
+  title: The Little Prince
+  author: Antoine de Saint-Exupéry
+  shelf: finished
+  color: "#27406b"
+
+- id: the-girl-with-the-dragon-tattoo
+  title: The Girl with the Dragon Tattoo
+  author: Stieg Larsson
+  shelf: finished
+  color: "#8fb3c4"
+
+# ── all-time favorites (placeholders, read a while ago) ──
 - id: bluets
   title: Bluets
   author: Maggie Nelson
-  shelf: finished
-  finished: 2026-08-18
+  shelf: read
   rating: 5
   favorite: true
   color: "#3452a8"
 
-- id: how-to-do-nothing
-  title: How to Do Nothing
-  author: Jenny Odell
-  shelf: finished
-  finished: 2026-07-30
-  rating: 4
-  color: "#e0c35a"
-  note: Underlined half of it. Went to a rose garden afterward.
-
-- id: klara-and-the-sun
-  title: Klara and the Sun
-  author: Kazuo Ishiguro
-  shelf: finished
-  finished: 2026-07-04
-  rating: 4
-  color: "#d98b3a"
-
-- id: pond
-  title: Pond
-  author: Claire-Louise Bennett
-  shelf: finished
-  finished: 2026-06-12
-  rating: 3
-  color: "#7a8c7e"
-
-# ── all-time favorites (still on the "finished" shelf) ──
 - id: the-summer-book
   title: The Summer Book
   author: Tove Jansson
-  shelf: finished
+  shelf: read
   favorite: true
   rating: 5
   color: "#8fb3c4"
@@ -90,7 +85,7 @@
 - id: a-field-guide-to-getting-lost
   title: A Field Guide to Getting Lost
   author: Rebecca Solnit
-  shelf: finished
+  shelf: read
   favorite: true
   rating: 5
   color: "#27406b"
@@ -98,7 +93,7 @@
 - id: the-hearing-trumpet
   title: The Hearing Trumpet
   author: Leonora Carrington
-  shelf: finished
+  shelf: read
   favorite: true
   rating: 5
   color: "#c46a5a"
@@ -106,7 +101,7 @@
 - id: invisible-cities
   title: Invisible Cities
   author: Italo Calvino
-  shelf: finished
+  shelf: read
   favorite: true
   rating: 5
   color: "#1f1d1a"
@@ -114,7 +109,7 @@
 - id: pilgrim-at-tinker-creek
   title: Pilgrim at Tinker Creek
   author: Annie Dillard
-  shelf: finished
+  shelf: read
   favorite: true
   rating: 5
   color: "#9a7b3f"
