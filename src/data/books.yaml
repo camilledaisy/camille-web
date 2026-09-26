@@ -101,6 +101,26 @@
   color: "#5d7a3a"
 
 # ── want to read ──
+- id: who-can-afford-to-be-critical
+  title: Who Can Afford to Be Critical?
+  author: Afonso Matos
+  shelf: want
+
+- id: designing-with-the-mind-in-mind
+  title: "Designing with the Mind in Mind: Simple Guide to Understanding User Interface Design Rules"
+  author: Jeff Johnson
+  shelf: want
+
+- id: the-poetics-of-space
+  title: The Poetics of Space
+  author: Gaston Bachelard
+  shelf: want
+
+- id: quantum-physics-for-poets
+  title: Quantum Physics for Poets
+  author: Leon M. Lederman
+  shelf: want
+
 - id: the-argonauts
   title: The Argonauts
   author: Maggie Nelson

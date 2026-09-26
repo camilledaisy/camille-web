@@ -36,7 +36,7 @@ export const currently = {
   items: [
     { label: 'making', value: 'an AAC app' },
     { label: 'listening to', value: 'Sun Bleached Flies by Ethel Cain' },
-    { label: 'learning', value: 'bookbinding (badly), Italian (slowly)' },
+    { label: 'learning', value: 'UX research' },
     { label: 'drinking', value: 'pistachio jasmine coconut from Molly Tea' },
   ],
 };
@@ -53,5 +53,6 @@ export const nav = [
 /** Elsewhere on the internet — shows up in the footer and on the about page. */
 export const elsewhere = [
   { label: 'email', href: 'mailto:daisyko7@outlook.com' },
-  { label: 'goodreads', href: 'https://www.goodreads.com/' },
+  { label: 'goodreads', href: 'https://www.goodreads.com/user/show/136950466-c' },
+  { label: 'letterboxd', href: 'https://letterboxd.com/camnism/' },
 ];
