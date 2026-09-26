@@ -19,11 +19,6 @@
   text: a mix on repeat lately
   href: https://www.youtube.com/watch?v=uxEsOvNd52s&list=PL_hJd_gOWkPwf1NWohPwDNNzXbOeyQMCF&index=2
 
-- id: window-light
-  kind: image
-  src: /img/print-window.svg
-  caption: 4pm window light, sept
-
 - id: quote-siken
   kind: quote
   text: I sleep. I dream. I make up things that I would never say. I say them very quietly.
@@ -48,11 +43,6 @@
 - id: ticket-cinema
   kind: ticket
   text: "ADMIT ONE · Blue Heron (2025)"
-
-- id: flowers
-  kind: image
-  src: /img/print-flowers.svg
-  caption: market flowers, $6
 
 - id: quote-oliver
   kind: quote
