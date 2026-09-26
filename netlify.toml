@@ -1,0 +1,8 @@
+# Settings for Netlify (the service that publishes the site).
+# With this file, Netlify knows how to build the site on its own.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
