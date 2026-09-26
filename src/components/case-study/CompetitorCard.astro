@@ -1,0 +1,111 @@
+---
+/**
+ * One product in the competitive analysis. With no `product`, it renders
+ * as an empty template so the structure is visible before any reviews exist.
+ */
+interface Competitor {
+  product: string;
+  platform?: string;
+  targetUsers?: string;
+  approach?: string;
+  strengths?: string;
+  concerns?: string;
+  accessibility?: string;
+  pricing?: string;
+  notes?: string;
+}
+interface Props {
+  item?: Competitor;
+}
+const { item } = Astro.props;
+const blank = !item;
+const fields: [keyof Competitor, string][] = [
+  ['platform', 'Platform'],
+  ['targetUsers', 'Target users'],
+  ['approach', 'Communication approach'],
+  ['strengths', 'Strengths'],
+  ['concerns', 'Potential usability concerns'],
+  ['accessibility', 'Accessibility considerations'],
+  ['pricing', 'Pricing / access model'],
+  ['notes', 'Notes'],
+];
+---
+
+<article class:list={['comp', { blank }]} aria-label={blank ? 'Empty template for a product review' : item!.product}>
+  <header>
+    <span class="meta">{blank ? 'template · not yet reviewed' : 'product'}</span>
+    <h3>{blank ? 'Product name' : item!.product}</h3>
+  </header>
+  <dl>
+    {
+      fields.map(([key, label]) => (
+        <div>
+          <dt>{label}</dt>
+          <dd>{blank ? <span class="empty">—</span> : item![key] || <span class="empty">not reviewed yet</span>}</dd>
+        </div>
+      ))
+    }
+  </dl>
+</article>
+
+<style>
+  .comp {
+    background: var(--paper-3);
+    border: 1px solid var(--rule);
+    padding: 1.2rem 1.3rem;
+    box-shadow: var(--shadow);
+  }
+  .blank {
+    background: transparent;
+    border: 1.5px dashed var(--ink-faint);
+    box-shadow: none;
+  }
+  header {
+    margin-bottom: 0.8rem;
+  }
+  h3 {
+    font-size: 1.6rem;
+    margin-top: 0.3rem;
+  }
+  .blank h3 {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+  dl > div {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0.8rem;
+    padding: 0.45rem 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+  dt {
+    font-family: var(--f-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    padding-top: 0.2rem;
+  }
+  dd {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .empty {
+    color: var(--ink-faint);
+  }
+  @media (max-width: 760px) {
+    dl {
+      grid-template-columns: 1fr;
+    }
+    dl > div {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+    }
+  }
+</style>

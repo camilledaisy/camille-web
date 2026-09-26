@@ -1,0 +1,73 @@
+---
+/**
+ * A small bracketed label that says what kind of thing you're looking at,
+ * e.g. [ hypothesis ], [ in progress ], [ planned ]. Always text, never color alone.
+ */
+interface Props {
+  tone?: 'progress' | 'hypothesis' | 'planned' | 'source' | 'done';
+}
+const { tone = 'progress' } = Astro.props;
+---
+
+<span class="chip" data-tone={tone}><slot /></span>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid currentColor;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .chip::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+  }
+  .chip[data-tone='progress'] {
+    color: var(--blue);
+    border-style: dashed;
+  }
+  .chip[data-tone='progress']::before {
+    background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+  }
+  .chip[data-tone='hypothesis'] {
+    color: var(--accent);
+    border-style: dotted;
+  }
+  .chip[data-tone='hypothesis']::before {
+    content: '?';
+    border: 0;
+    width: auto;
+    height: auto;
+    font-weight: 500;
+  }
+  .chip[data-tone='planned'] {
+    color: var(--ink-faint);
+    border-style: dashed;
+  }
+  .chip[data-tone='source'] {
+    color: var(--ink);
+  }
+  .chip[data-tone='source']::before {
+    content: '¶';
+    border: 0;
+    width: auto;
+    height: auto;
+  }
+  .chip[data-tone='done'] {
+    color: var(--accent);
+  }
+  .chip[data-tone='done']::before {
+    background: currentColor;
+  }
+</style>

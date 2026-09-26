@@ -1,0 +1,77 @@
+---
+/**
+ * The little "+-- spec sheet --+" box of project details.
+ * Used on every project page (and the Communimate case study).
+ */
+interface Row {
+  label: string;
+  value: string;
+  href?: string;
+  // renders the value as a status stamp (e.g. "ongoing")
+  stamp?: boolean;
+}
+interface Props {
+  rows: Row[];
+  title?: string;
+}
+const { rows, title = 'spec sheet' } = Astro.props;
+const width = 22;
+const top = `+-- ${title} ${'-'.repeat(Math.max(2, width - title.length - 5))}+`;
+const bottom = `+${'-'.repeat(top.length - 2)}+`;
+---
+
+<div class="spec-sheet">
+  <pre class="meta" aria-hidden="true">{top}</pre>
+  <dl>
+    {
+      rows.map((r) => (
+        <div>
+          <dt>{r.label}</dt>
+          <dd>
+            {r.stamp ? (
+              <span class="stamp" data-status={r.value}>
+                {r.value}
+              </span>
+            ) : r.href ? (
+              <a href={r.href}>{r.value}</a>
+            ) : (
+              r.value
+            )}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+  <pre class="meta" aria-hidden="true">{bottom}</pre>
+</div>
+
+<style>
+  pre {
+    margin: 0;
+    color: var(--ink-faint);
+    text-transform: none;
+    overflow: hidden;
+  }
+  dl {
+    margin: 0.6rem 0;
+  }
+  dl > div {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0.8rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px dotted var(--rule);
+    font-size: 0.95rem;
+  }
+  dt {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    padding-top: 0.2rem;
+  }
+  dd {
+    margin: 0;
+  }
+</style>

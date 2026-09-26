@@ -1,0 +1,58 @@
+---
+/**
+ * An empty, clearly-labelled frame for things that don't exist yet
+ * (a hero mockup, sketches, screenshots…). Swap it for a real image later.
+ */
+interface Props {
+  label: string;
+  hint?: string;
+  ratio?: string;
+  size?: 'sm' | 'lg';
+}
+const { label, hint = 'coming soon', ratio = '4 / 3', size = 'sm' } = Astro.props;
+---
+
+<div class={`ph ${size}`} style={`aspect-ratio:${ratio}`} role="img" aria-label={`Placeholder: ${label} — ${hint}`}>
+  <span class="ph-label" aria-hidden="true">[ {label} ]</span>
+  <span class="ph-hint scribble" aria-hidden="true">{hint}</span>
+</div>
+
+<style>
+  .ph {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem;
+    text-align: center;
+    border: 1.5px dashed var(--ink-faint);
+    background-color: var(--paper-3);
+    /* pencil hatching */
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0 10px,
+      color-mix(in srgb, var(--ink) 6%, transparent) 10px 11px
+    );
+  }
+  .ph-label {
+    font-family: var(--f-mono);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    background: var(--paper-3);
+    padding: 0.1rem 0.4rem;
+  }
+  .ph-hint {
+    font-size: 1.25rem;
+    background: var(--paper-3);
+    padding: 0 0.3rem;
+  }
+  .lg .ph-label {
+    font-size: 0.9rem;
+  }
+  .lg .ph-hint {
+    font-size: 1.6rem;
+  }
+</style>

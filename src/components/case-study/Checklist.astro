@@ -1,0 +1,78 @@
+---
+/** [x] done · [~] doing · [ ] to do — a plain-text-feeling checklist. */
+interface Item {
+  text: string;
+  state: 'done' | 'doing' | 'todo';
+}
+interface Props {
+  items: readonly Item[];
+}
+const { items } = Astro.props;
+const box = { done: '[x]', doing: '[~]', todo: '[ ]' };
+const said = { done: 'done', doing: 'in progress', todo: 'to do' };
+---
+
+<ol class="check">
+  {
+    items.map((it) => (
+      <li data-state={it.state}>
+        <span class="box" aria-hidden="true">
+          {box[it.state]}
+        </span>
+        <span class="arrow" aria-hidden="true">
+          →
+        </span>
+        <span class="t">{it.text}</span>
+        <span class="s meta">{said[it.state]}</span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .check {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 2.2rem 1.2rem 1fr auto;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dotted var(--rule);
+    transition: transform 0.3s var(--wobble);
+  }
+  li:hover {
+    transform: translateX(0.3rem);
+  }
+  .box {
+    font-family: var(--f-mono);
+    font-size: 0.9rem;
+    color: var(--ink-faint);
+  }
+  .arrow {
+    color: var(--accent);
+  }
+  .t {
+    font-size: 1.08rem;
+  }
+  .s {
+    font-size: 0.64rem;
+    color: var(--ink-faint);
+  }
+  [data-state='doing'] .box,
+  [data-state='doing'] .s {
+    color: var(--blue);
+    font-weight: 500;
+  }
+  [data-state='done'] .box {
+    color: var(--accent);
+  }
+  [data-state='done'] .t {
+    text-decoration: line-through;
+    text-decoration-color: var(--accent);
+    color: var(--ink-soft);
+  }
+</style>

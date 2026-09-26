@@ -1,0 +1,94 @@
+---
+/** One secondary-research source + the notes taken from it. */
+import Chip from './Chip.astro';
+
+interface Source {
+  id: string;
+  type: string;
+  authors: string;
+  title: string;
+  edition?: string;
+  year?: string;
+  publisher?: string;
+  link?: string;
+  status?: string;
+  notes: string[];
+}
+interface Props {
+  source: Source;
+  index: number;
+}
+const { source, index } = Astro.props;
+const cite = [source.edition, source.publisher, source.year].filter(Boolean).join(' · ');
+---
+
+<article class="src" aria-labelledby={`src-${source.id}`}>
+  <header class="src-head">
+    <span class="meta n">source {String(index + 1).padStart(2, '0')} · {source.type}</span>
+    {source.status && <Chip tone={source.status === 'read' ? 'done' : 'progress'}>{source.status}</Chip>}
+  </header>
+  <h3 id={`src-${source.id}`}>
+    {source.link ? <a href={source.link}>{source.title}</a> : <em>{source.title}</em>}
+  </h3>
+  <p class="by">{source.authors}</p>
+  {cite && <p class="meta cite">{cite}</p>}
+
+  <p class="meta notes-h">notes (paraphrased from the source)</p>
+  <ul class="notes">
+    {source.notes.map((n) => <li>{n}</li>)}
+  </ul>
+</article>
+
+<style>
+  .src {
+    background: var(--paper-3);
+    border: 1px solid var(--rule);
+    box-shadow: var(--shadow);
+    padding: 1.3rem 1.4rem 1.2rem;
+    position: relative;
+  }
+  .src-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.8rem;
+  }
+  h3 {
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.9rem);
+    line-height: 1.1;
+  }
+  .by {
+    margin: 0.5rem 0 0.2rem;
+    font-size: 1rem;
+  }
+  .cite {
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .notes-h {
+    margin: 1.2rem 0 0.4rem;
+    padding-top: 0.8rem;
+    border-top: 1px dotted var(--rule);
+    color: var(--accent);
+  }
+  .notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .notes li {
+    position: relative;
+    padding: 0.35rem 0 0.35rem 1.6rem;
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+  .notes li::before {
+    content: '↳';
+    position: absolute;
+    left: 0.2rem;
+    color: var(--blue);
+    font-family: var(--f-mono);
+  }
+</style>

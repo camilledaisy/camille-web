@@ -69,6 +69,19 @@ featured: true                  # show on the homepage
 The write-up / case study goes here.
 ```
 
+### Communimate (the case-study page)
+
+Everything on `/projects/communimate` is written in **`src/data/communimate.ts`**, section by section, with comments explaining each part. You shouldn't need to open the page file.
+
+- **Status & date:** edit `status` at the top (`lastUpdated`, `phase`).
+- **Progress:** in `process`, mark stages `'done'`, `'current'`, `'next'` or `'planned'`; tick off `nextSteps` with `'done'`, `'doing'` or `'todo'`.
+- **New source:** copy a `{ … }` block in `sources`.
+- **Competitive analysis:** copy the commented template into `competitors`.
+- **Images:** put files in `public/img/communimate/` and fill in `hero.image`, `designExploration.items` or `libraryExtras` — always with `alt` text describing the image.
+- **Page log:** add a line to `changelog` whenever you update.
+
+The case-study building blocks (status chips, timeline, source cards…) live in `src/components/case-study/` and can be reused for future case studies. A project with `customPage: true` in its Markdown file uses its own page in `src/pages/projects/` instead of the standard template.
+
 ### Books
 
 In `src/data/books.yaml`, every book has a `shelf`: `reading` (now), `finished` (recently finished — newest at the top), `read` (a while ago), or `want` (the to-read pile). Add `favorite: true` to put any book on the Favorites shelf. Finished a book? Change its shelf from `reading` to `finished` and move it to the top of that group. Dates (`finished: 2026-10-01`) and a `rating` are optional. The comment at the top of the file lists every option.

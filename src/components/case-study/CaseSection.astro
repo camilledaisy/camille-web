@@ -1,0 +1,40 @@
+---
+/**
+ * One numbered section of a case study: § 01 — Title, an optional chip that says
+ * what kind of content it is, then whatever you put inside.
+ */
+import SectionHead from '../SectionHead.astro';
+import Chip from './Chip.astro';
+
+interface Props {
+  id: string;
+  num: string;
+  title: string;
+  note?: string;
+  chip?: string;
+  tone?: 'progress' | 'hypothesis' | 'planned' | 'source' | 'done';
+}
+const { id, num, title, note, chip, tone } = Astro.props;
+---
+
+<section class="cs-section" id={id} aria-labelledby={`${id}-h`}>
+  <SectionHead num={num} id={`${id}-h`} title={title} note={note} />
+  {
+    chip && (
+      <p class="cs-chip">
+        <Chip tone={tone}>{chip}</Chip>
+      </p>
+    )
+  }
+  <slot />
+</section>
+
+<style>
+  .cs-section {
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+    scroll-margin-top: 1.5rem;
+  }
+  .cs-chip {
+    margin: -0.8rem 0 1.4rem;
+  }
+</style>

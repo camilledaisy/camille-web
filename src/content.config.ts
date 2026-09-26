@@ -43,6 +43,8 @@ const projects = defineCollection({
     link: z.url().optional(),
     // featured projects show up on the homepage
     featured: z.boolean().default(false),
+    // true = this project has its own hand-built page at src/pages/projects/<file-name>.astro
+    customPage: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 });

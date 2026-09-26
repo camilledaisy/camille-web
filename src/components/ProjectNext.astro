@@ -1,0 +1,48 @@
+---
+/** "next project →" link at the bottom of project pages. */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  next: CollectionEntry<'projects'>;
+}
+const { next } = Astro.props;
+---
+
+<nav class="next" aria-label="Next project">
+  <a class="bare" href={`/projects/${next.id}`} data-preview={next.data.image} data-cursor="next one →">
+    <span class="meta">next project →</span>
+    <span class="nt">{next.data.title}</span>
+  </a>
+  <a class="draw meta" href="/projects">← all projects</a>
+</nav>
+
+<style>
+  .next {
+    margin-top: 5rem;
+    border-top: 1px solid var(--ink);
+    padding-top: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .next > a:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .nt {
+    font-family: var(--f-display);
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 4rem);
+    line-height: 1;
+    transition:
+      color 0.2s,
+      transform 0.4s var(--wobble);
+  }
+  .next a:hover .nt {
+    color: var(--accent);
+    font-style: italic;
+    transform: translateX(0.5rem);
+  }
+</style>
