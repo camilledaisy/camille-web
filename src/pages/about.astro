@@ -41,7 +41,7 @@ import { elsewhere, site } from '../site.config';
           src="/img/about/daisy-childhood.jpg"
           alt="Daisy as a small child in a light blue bucket hat and sleeveless top, leaning against a yellow pillar in a leafy garden, lips pursed."
           width="1400"
-          height="933"
+          height="905"
         />
         <figcaption>me, approximately</figcaption>
       </figure>
@@ -139,9 +139,20 @@ import { elsewhere, site } from '../site.config';
   .portrait:hover {
     transform: rotate(-2deg) scale(1.02);
   }
-  /* the photo is landscape, unlike the default tall polaroid */
+  /* no white polaroid frame here — just the photo, taped down */
+  .portrait {
+    background: none;
+    border: 0;
+    padding: 0;
+    box-shadow: none;
+  }
   .portrait img {
-    aspect-ratio: 3 / 2;
+    aspect-ratio: auto;
+    box-shadow: var(--shadow);
+  }
+  .portrait figcaption {
+    position: static;
+    margin-top: 0.6rem;
   }
   .story {
     grid-column: 2 / span 7;

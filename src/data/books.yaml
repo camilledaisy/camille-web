@@ -120,35 +120,4 @@
   title: Quantum Physics for Poets
   author: Leon M. Lederman
   shelf: want
-
-- id: the-argonauts
-  title: The Argonauts
-  author: Maggie Nelson
-  shelf: want
-  note: after Bluets, obviously
-
-- id: the-overstory
-  title: The Overstory
-  author: Richard Powers
-  shelf: want
-
-- id: the-living-mountain
-  title: The Living Mountain
-  author: Nan Shepherd
-  shelf: want
-  note: recommended by a stranger on a train
-
-- id: stay-true
-  title: Stay True
-  author: Hua Hsu
-  shelf: want
-
-- id: the-book-of-delights
-  title: The Book of Delights
-  author: Ross Gay
-  shelf: want
-
-- id: severance
-  title: Severance
-  author: Ling Ma
-  shelf: want
+  color: "#27406b"
