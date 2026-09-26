@@ -4,7 +4,27 @@ import { hash, inFileOrder, tilt } from '../lib/utils';
 import raw from '../data/scrapbook.yaml?raw';
 
 const items = inFileOrder(await getCollection('scrapbook'), raw);
-const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4 };
+const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5 };
+
+/**
+ * A YouTube link → the pieces needed for a click-to-play embed. Nothing loads
+ * from YouTube (beyond the cover picture) until someone presses play.
+ */
+const youtube = (href = '') => {
+  try {
+    const u = new URL(href);
+    const id = u.hostname.includes('youtu.be') ? u.pathname.slice(1) : u.searchParams.get('v') ?? '';
+    const list = u.searchParams.get('list');
+    const params = new URLSearchParams({ autoplay: '1', rel: '0' });
+    if (list) params.set('list', list);
+    return {
+      thumb: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+      embed: `https://www.youtube-nocookie.com/embed/${id}?${params}`,
+    };
+  } catch {
+    return null;
+  }
+};
 const host = (href = '') => {
   try {
     return new URL(href).hostname.replace(/^www\./, '');
@@ -39,6 +59,29 @@ const host = (href = '') => {
               <span class="meta">{data.caption ?? host(data.href)}</span>
             </a>
           )}
+          {data.kind === 'mix' &&
+            (() => {
+              const yt = youtube(data.href);
+              return (
+                <div class="mix">
+                  <div class="mix-screen" data-yt={yt?.embed} data-yt-title={data.text}>
+                    <button type="button" class="mix-play" data-cursor="play ▶" aria-label={`Play: ${data.text} (loads YouTube)`}>
+                      {yt && <img src={yt.thumb} alt="" loading="lazy" width="480" height="360" onerror="this.remove()" />}
+                      <span class="mix-btn" aria-hidden="true">
+                        ▶
+                      </span>
+                    </button>
+                  </div>
+                  <div class="mix-label">
+                    <span class="meta">side a · on repeat</span>
+                    <span class="mix-t">{data.text}</span>
+                    <a href={data.href} class="meta mix-open" rel="noopener">
+                      {data.caption ?? 'open on youtube'} ↗
+                    </a>
+                  </div>
+                </div>
+              );
+            })()}
           {data.kind === 'note' && <p class="sticky">{data.text}</p>}
           {data.kind === 'swatch' && (
             <div class="chip">
@@ -126,6 +169,93 @@ const host = (href = '') => {
   .label:hover .lt {
     text-decoration: underline wavy var(--accent) 1px;
     text-underline-offset: 0.3em;
+  }
+
+  /* mixtape: a little screen + a cassette-style label */
+  .mix {
+    background: var(--ink);
+    padding: 10px 10px 0;
+    box-shadow: var(--shadow);
+  }
+  .mix-screen {
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+  }
+  .mix-screen :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .mix-play {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #111;
+  }
+  .mix-play img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    filter: saturate(0.85);
+    transition: opacity 0.3s;
+  }
+  .mix-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 3.4rem;
+    height: 3.4rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    padding-left: 0.2rem;
+    font-size: 1.2rem;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--paper) 35%, transparent);
+    transition: transform 0.35s var(--wobble);
+  }
+  .mix-play:hover img,
+  .mix-play:focus-visible img {
+    opacity: 1;
+  }
+  .mix-play:hover .mix-btn,
+  .mix-play:focus-visible .mix-btn {
+    transform: scale(1.12);
+  }
+  .mix-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin: 10px -10px 0;
+    padding: 0.7rem 1rem 0.8rem;
+    background-color: var(--paper-3);
+    background-image: repeating-linear-gradient(
+      transparent 0 1.55rem,
+      color-mix(in srgb, var(--blue) 20%, transparent) 1.55rem calc(1.55rem + 1px)
+    );
+    border-top: 4px solid var(--accent);
+  }
+  .mix-label .meta {
+    color: var(--ink-soft);
+  }
+  .mix-t {
+    font-family: var(--f-hand);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    color: var(--blue);
+  }
+  .mix-open {
+    align-self: flex-end;
+    text-transform: none;
+    letter-spacing: 0.02em;
   }
 
   .sticky {

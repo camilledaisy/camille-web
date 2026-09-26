@@ -175,6 +175,20 @@ document.querySelectorAll<HTMLButtonElement>('[data-shuffle]').forEach((btn) => 
   });
 });
 
+/* ---------- mixtapes: swap the cover for the YouTube player on click ---------- */
+document.querySelectorAll<HTMLElement>('[data-yt]').forEach((screen) => {
+  screen.querySelector('button')?.addEventListener('click', () => {
+    const frame = document.createElement('iframe');
+    frame.src = screen.dataset.yt!;
+    frame.title = `YouTube player: ${screen.dataset.ytTitle ?? 'mix'}`;
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    screen.replaceChildren(frame);
+    frame.focus();
+  });
+});
+
 /* ---------- petals: click the big name on the homepage ---------- */
 let nameClicks = 0;
 document.querySelectorAll<HTMLElement>('[data-petals]').forEach((el) => {

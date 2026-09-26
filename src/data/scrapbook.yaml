@@ -8,10 +8,16 @@
 #    note    → text                      a sticky note
 #    swatch  → color + text              a paint chip
 #    ticket  → text (+ caption)          a ticket stub
+#    mix     → href (YouTube link) + text  a playable mixtape
 #
 #  Order matters: things are placed in the order they appear here.
 #  Images go in /public/img/ and are referenced like /img/my-photo.jpg
 # ─────────────────────────────────────────────────────────────
+
+- id: mix-1
+  kind: mix
+  text: a mix on repeat lately
+  href: https://www.youtube.com/watch?v=uxEsOvNd52s&list=PL_hJd_gOWkPwf1NWohPwDNNzXbOeyQMCF&index=2
 
 - id: window-light
   kind: image
