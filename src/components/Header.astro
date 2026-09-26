@@ -73,7 +73,7 @@ const crumb = path === '/' ? '' : path.split('/').filter(Boolean)[0];
     gap: 0.35rem;
   }
   .flower {
-    color: var(--red);
+    color: var(--accent);
     font-style: normal;
     display: inline-block;
     transition: transform 0.8s var(--wobble);
@@ -115,7 +115,7 @@ const crumb = path === '/' ? '' : path.split('/').filter(Boolean)[0];
     content: '';
     position: absolute;
     inset: -0.45rem -0.7rem -0.35rem -0.6rem;
-    border: 1.5px solid var(--red);
+    border: 1.5px solid var(--blue);
     border-radius: 52% 48% 55% 45% / 60% 45% 55% 40%;
     transform: rotate(-3deg);
     pointer-events: none;
@@ -133,7 +133,7 @@ const crumb = path === '/' ? '' : path.split('/').filter(Boolean)[0];
     color: var(--ink-soft);
   }
   .theme:hover {
-    color: var(--red);
+    color: var(--accent);
   }
   .edge {
     font-family: var(--f-mono);

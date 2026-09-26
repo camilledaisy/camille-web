@@ -230,6 +230,6 @@ document.addEventListener('visibilitychange', () => {
 // 4. hello, fellow inspector of elements
 console.log(
   '%c✿ hi! %cyou’re poking around in the console. i respect that.\n  try: the konami code, typing "garden", or clicking my name a lot.',
-  'color:#c8391e;font-size:20px;font-family:Georgia,serif',
+  'color:#4f6f2a;font-size:20px;font-family:Georgia,serif',
   'color:inherit;font-family:monospace',
 );

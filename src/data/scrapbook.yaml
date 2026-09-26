@@ -35,8 +35,8 @@
 
 - id: swatch-sept
   kind: swatch
-  color: "#c8391e"
-  text: color of the month — tomato, cooked down
+  color: "#8fae5a"
+  text: color of the month — matcha, whisked too long
 
 - id: harbor
   kind: image
