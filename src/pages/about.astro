@@ -42,14 +42,53 @@ import { elsewhere, site } from '../site.config';
 
       <figure class="photo portrait">
         <span class="tape" aria-hidden="true"></span>
-        <img src="/img/print-portrait.svg" alt="A risograph-style placeholder portrait" width="600" height="750" />
+        <img
+          src="/img/about/daisy-childhood.jpg"
+          alt="Daisy as a small child in a light blue bucket hat and sleeveless top, leaning against a yellow pillar in a leafy garden, lips pursed."
+          width="1400"
+          height="933"
+        />
         <figcaption>me, approximately</figcaption>
       </figure>
     </div>
 
+    <section class="section grid story-sec" id="story" aria-labelledby="story-h">
+      <div class="story">
+        <SectionHead num="01" id="story-h" title="The story of Daisy" note="a true story, somehow" />
+        <div class="prose">
+          <p>
+            My name is actually Camille, but <strong>Daisy</strong> has been my nickname since childhood—and there’s a bit of
+            a story behind it.
+          </p>
+          <p>
+            When I was a baby in the Philippines, I was sick a lot, and even the doctors couldn’t quite figure out what was
+            wrong. Eventually, my parents brought me to a Filipino woman who practiced traditional folk rituals. She cracked
+            an egg into a glass of water and began saying different names aloud. When she said <strong
+              class="name-said">“Daisy Siete,”</strong
+            > the yolk rose to the top of the glass.
+          </p>
+          <p>My family started calling me Daisy after that—and, strangely enough, I stopped getting sick.</p>
+          <p>
+            Do I know how that worked? Absolutely not. But the name stuck, and so did the story. <strong
+              >Daisy became more than a childhood nickname; it became a little piece of my family, my culture, and the story
+              of how I became me.</strong
+            >
+          </p>
+        </div>
+      </div>
+      <pre class="glass" aria-hidden="true">{String.raw`
+   .---------.
+   |    o    |   <- the yolk,
+   |  ~~~~~  |      rising
+   |         |
+   |         |
+    \_______/
+`}</pre>
+    </section>
+
     <section class="section grid" aria-labelledby="hi-h">
       <div class="hi" id="say-hi">
-        <SectionHead num="01" id="hi-h" title="Say hi" />
+        <SectionHead num="02" id="hi-h" title="Say hi" />
         <p>
           I love getting emails from strangers — about a post, a book, a project, or nothing at all. The best way to reach
           me is <a href={`mailto:${site.email}`}>{site.email}</a>.
@@ -69,7 +108,7 @@ import { elsewhere, site } from '../site.config';
 
     <section class="section grid" id="colophon" aria-labelledby="colo-h">
       <div class="colo">
-        <SectionHead num="02" id="colo-h" title="Colophon" note="how this place is built" />
+        <SectionHead num="03" id="colo-h" title="Colophon" note="how this place is built" />
         <dl>
           <div><dt>built with</dt><dd>Astro, plain CSS, a little JavaScript, and too much fiddling</dd></div>
           <div><dt>type</dt><dd>Instrument Serif, Newsreader, IBM Plex Mono & Caveat — all from Google Fonts</dd></div>
@@ -97,13 +136,41 @@ import { elsewhere, site } from '../site.config';
     grid-column: 2 / span 6;
   }
   .portrait {
-    grid-column: 9 / span 3;
-    margin-top: -6rem;
+    grid-column: 8 / span 5;
+    margin-top: -4rem;
     transform: rotate(3deg);
     transition: transform 0.5s var(--wobble);
   }
   .portrait:hover {
     transform: rotate(-2deg) scale(1.02);
+  }
+  /* the photo is landscape, unlike the default tall polaroid */
+  .portrait img {
+    aspect-ratio: 3 / 2;
+  }
+  .story {
+    grid-column: 2 / span 7;
+  }
+  .story strong {
+    font-weight: 600;
+  }
+  .name-said {
+    font-family: var(--f-display);
+    font-style: italic;
+    font-weight: 400 !important;
+    font-size: 1.25em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .glass {
+    grid-column: 10 / span 3;
+    align-self: center;
+    margin: 4rem 0 0;
+    font-family: var(--f-mono);
+    font-size: 0.85rem;
+    line-height: 1.25;
+    color: var(--blue);
+    transform: rotate(-3deg);
   }
   .hi {
     grid-column: 3 / span 8;
@@ -145,7 +212,10 @@ import { elsewhere, site } from '../site.config';
   @media (max-width: 860px) {
     .portrait {
       margin-top: 2rem;
-      max-width: 18rem;
+      max-width: 26rem;
+    }
+    .glass {
+      display: none;
     }
     .hi {
       margin-top: 0;

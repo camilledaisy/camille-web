@@ -42,12 +42,6 @@
   kind: ticket
   text: "ADMIT ONE · Blue Heron (2025)"
 
-- id: link-library
-  kind: link
-  text: an archive of old library catalog cards
-  href: https://www.loc.gov/
-  caption: loc.gov
-
 - id: flowers
   kind: image
   src: /img/print-flowers.svg
