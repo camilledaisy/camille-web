@@ -18,7 +18,7 @@ export const site = {
   location: 'somewhere with good light',
   // used for the little clock in the header. find yours at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   timezone: 'America/New_York',
-  email: 'hello@daisy.example.com',
+  email: 'daisyko7@outlook.com',
 };
 
 /** The paragraph on the homepage, right under your name. */
@@ -32,14 +32,12 @@ export const intro = [
  * `label` is the left column, `value` is the right. Add or remove rows freely.
  */
 export const currently = {
-  updated: '2026-09-23',
+  updated: '2026-09-26',
   items: [
-    { label: 'making', value: 'a tiny app for tracking which plants I’ve forgotten to water' },
-    { label: 'listening', value: 'Alice Coltrane, on repeat, mostly in the mornings' },
-    { label: 'thinking about', value: 'why old websites felt more like rooms than feeds' },
+    { label: 'making', value: 'an AAC app' },
+    { label: 'listening to', value: 'Sun Bleached Flies by Ethel Cain' },
     { label: 'learning', value: 'bookbinding (badly), Italian (slowly)' },
-    { label: 'drinking', value: 'too much cold brew, a respectable amount of tea' },
-    { label: 'wanting', value: 'a long train ride with no signal' },
+    { label: 'drinking', value: 'pistachio jasmine coconut from Molly Tea' },
   ],
 };
 
@@ -54,9 +52,6 @@ export const nav = [
 
 /** Elsewhere on the internet — shows up in the footer and on the about page. */
 export const elsewhere = [
-  { label: 'email', href: 'mailto:hello@daisy.example.com' },
-  { label: 'are.na', href: 'https://www.are.na/' },
-  { label: 'github', href: 'https://github.com/camilledaisy' },
+  { label: 'email', href: 'mailto:daisyko7@outlook.com' },
   { label: 'goodreads', href: 'https://www.goodreads.com/' },
-  { label: 'rss', href: '/rss.xml' },
 ];

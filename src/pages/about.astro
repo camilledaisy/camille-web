@@ -4,14 +4,6 @@ import SectionHead from '../components/SectionHead.astro';
 import { elsewhere, site } from '../site.config';
 
 /* This page is plain HTML — edit the words directly below. */
-const facts = [
-  'I keep a list of every bird I’ve seen from a window.',
-  'My first website had a MIDI file that autoplayed. I’m sorry.',
-  'I can’t whistle, but I can do a very convincing owl.',
-  'I think the best UI is a well-organized paper notebook.',
-  'Currently growing: basil, a stubborn fern, and patience.',
-  'I will always stop to read a community bulletin board.',
-];
 ---
 
 <Base title="About" description="Who Daisy is, what this website is, and how to say hi.">
@@ -26,18 +18,26 @@ const facts = [
     <div class="grid main">
       <div class="prose dropcap text">
         <p>
-          I’m {site.name}. By day I design things that live on screens — mostly interfaces, sometimes systems, occasionally
-          a whole app. By night (and early morning, and lunch breaks) I read, write, and make small things for no reason.
+          I’m Daisy. I’m figuring out what I want to make and how I want to make it. Lately, that means learning about UX
+          research, designing things that live on screens, and turning ideas I have in my head into things people can
+          actually click on.
         </p>
         <p>
-          I’m interested in slowness, handmade software, the history of the web, libraries of all kinds, and the way
-          people make places feel like home. I care a lot about typography and very little about productivity.
+          When I’m not doing that, I’m probably reading a book, writing something I may or may not ever finish, watching
+          a film, or falling into a very specific internet rabbit hole. I like stories that make me think, psychology,
+          strange little websites, philosophy, and learning far too much about whatever has my attention that week.
         </p>
         <p>
-          This website is my attempt at a room of my own on the internet. It’s not a portfolio or a brand. It’s closer to
-          a notebook I’ve decided to leave open on the table. Things will change, break, and grow here.
+          I’m interested in people — how we think, communicate, behave, and make sense of things. That’s probably why I
+          studied psychology, and why I’ve found myself drawn to UX research. I like asking questions, noticing small
+          things, and understanding the why behind what people do.
         </p>
-        <p><em>(All of this is placeholder text — swap in your real story.)</em></p>
+        <p>
+          This website is my little corner of the internet. Part notebook, part scrapbook, part archive of things I’ve
+          made and things I like. It isn’t meant to be perfectly polished or finished. I want it to change as I do.
+        </p>
+        <p>Things will appear, disappear, break, get rewritten, and probably move around for no particular reason.</p>
+        <p>That’s kind of the point.</p>
       </div>
 
       <figure class="photo portrait">
@@ -47,16 +47,9 @@ const facts = [
       </figure>
     </div>
 
-    <section class="section grid" aria-labelledby="facts-h">
-      <div class="facts">
-        <SectionHead num="01" id="facts-h" title="Some facts, in no order" />
-        <ol>
-          {facts.map((f) => <li>{f}</li>)}
-        </ol>
-      </div>
-
+    <section class="section grid" aria-labelledby="hi-h">
       <div class="hi" id="say-hi">
-        <SectionHead num="02" title="Say hi" />
+        <SectionHead num="01" id="hi-h" title="Say hi" />
         <p>
           I love getting emails from strangers — about a post, a book, a project, or nothing at all. The best way to reach
           me is <a href={`mailto:${site.email}`}>{site.email}</a>.
@@ -76,7 +69,7 @@ const facts = [
 
     <section class="section grid" id="colophon" aria-labelledby="colo-h">
       <div class="colo">
-        <SectionHead num="03" id="colo-h" title="Colophon" note="how this place is built" />
+        <SectionHead num="02" id="colo-h" title="Colophon" note="how this place is built" />
         <dl>
           <div><dt>built with</dt><dd>Astro, plain CSS, a little JavaScript, and too much fiddling</dd></div>
           <div><dt>type</dt><dd>Instrument Serif, Newsreader, IBM Plex Mono & Caveat — all from Google Fonts</dd></div>
@@ -112,36 +105,8 @@ const facts = [
   .portrait:hover {
     transform: rotate(-2deg) scale(1.02);
   }
-  .facts {
-    grid-column: 1 / span 6;
-  }
-  .facts ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: f;
-  }
-  .facts li {
-    counter-increment: f;
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    padding: 0.55rem 0;
-    border-bottom: 1px dotted var(--rule);
-    transition: transform 0.3s var(--wobble);
-  }
-  .facts li::before {
-    content: counter(f, decimal-leading-zero);
-    font-family: var(--f-mono);
-    font-size: 0.72rem;
-    color: var(--accent);
-    padding-top: 0.35rem;
-  }
-  .facts li:hover {
-    transform: translateX(0.4rem);
-  }
   .hi {
-    grid-column: 8 / span 5;
-    margin-top: 4rem;
+    grid-column: 3 / span 8;
   }
   .links {
     list-style: none;

@@ -64,55 +64,41 @@
   shelf: finished
   color: "#8fb3c4"
 
-# ── all-time favorites (placeholders, read a while ago) ──
+# ── all-time favorites ──
 - id: bluets
   title: Bluets
   author: Maggie Nelson
   shelf: read
-  rating: 5
   favorite: true
   color: "#3452a8"
 
-- id: the-summer-book
-  title: The Summer Book
-  author: Tove Jansson
+- id: never-let-me-go
+  title: Never Let Me Go
+  author: Kazuo Ishiguro
   shelf: read
   favorite: true
-  rating: 5
   color: "#8fb3c4"
-  note: The one I buy for everyone.
 
-- id: a-field-guide-to-getting-lost
-  title: A Field Guide to Getting Lost
-  author: Rebecca Solnit
+- id: giovannis-room
+  title: Giovanni’s Room
+  author: James Baldwin
   shelf: read
   favorite: true
-  rating: 5
-  color: "#27406b"
-
-- id: the-hearing-trumpet
-  title: The Hearing Trumpet
-  author: Leonora Carrington
-  shelf: read
-  favorite: true
-  rating: 5
   color: "#c46a5a"
 
-- id: invisible-cities
-  title: Invisible Cities
-  author: Italo Calvino
+- id: crush
+  title: Crush
+  author: Richard Siken
   shelf: read
   favorite: true
-  rating: 5
   color: "#1f1d1a"
 
-- id: pilgrim-at-tinker-creek
-  title: Pilgrim at Tinker Creek
-  author: Annie Dillard
+- id: men-without-women
+  title: Men Without Women
+  author: Haruki Murakami
   shelf: read
   favorite: true
-  rating: 5
-  color: "#9a7b3f"
+  color: "#5d7a3a"
 
 # ── want to read ──
 - id: the-argonauts

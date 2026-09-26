@@ -18,10 +18,10 @@
   src: /img/print-window.svg
   caption: 4pm window light, sept
 
-- id: quote-dillard
+- id: quote-siken
   kind: quote
-  text: How we spend our days is, of course, how we spend our lives.
-  caption: Annie Dillard
+  text: I sleep. I dream. I make up things that I would never say. I say them very quietly.
+  caption: Richard Siken
 
 - id: link-poolsuite
   kind: link
@@ -31,22 +31,16 @@
 
 - id: sticky-1
   kind: note
-  text: remember to buy more index cards!! and film
+  text: start using my film camera again
 
 - id: swatch-sept
   kind: swatch
   color: "#8fae5a"
   text: color of the month — matcha, whisked too long
 
-- id: harbor
-  kind: image
-  src: /img/print-harbor.svg
-  caption: the harbor, almost blue
-
 - id: ticket-cinema
   kind: ticket
-  text: "ADMIT ONE · Paris, Texas (1984)"
-  caption: row F, seat 11
+  text: "ADMIT ONE · Blue Heron (2025)"
 
 - id: link-library
   kind: link
@@ -59,17 +53,13 @@
   src: /img/print-flowers.svg
   caption: market flowers, $6
 
-- id: sticky-2
-  kind: note
-  text: "a website can be a garden, not a billboard"
-
 - id: quote-oliver
   kind: quote
   text: Instructions for living a life. Pay attention. Be astonished. Tell about it.
   caption: Mary Oliver
 
-- id: link-hundred-rabbits
+- id: link-2001
   kind: link
-  text: two artists living on a sailboat, making small software
-  href: https://100r.co/
-  caption: 100r.co
+  text: "every single frame of 2001: A Space Odyssey"
+  href: https://www.everysingleframe.com/2001aspaceodyssey
+  caption: everysingleframe.com
