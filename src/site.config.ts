@@ -53,6 +53,5 @@ export const nav = [
 /** Elsewhere on the internet — shows up in the footer and on the about page. */
 export const elsewhere = [
   { label: 'email', href: 'mailto:daisyko7@outlook.com' },
-  { label: 'goodreads', href: 'https://www.goodreads.com/user/show/136950466-c' },
   { label: 'letterboxd', href: 'https://letterboxd.com/camnism/' },
 ];
