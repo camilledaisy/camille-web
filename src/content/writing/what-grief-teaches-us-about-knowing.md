@@ -1,6 +1,7 @@
 ---
 title: What Grief Teaches Us About Knowing
-date: 2026-09-26
+date: 2025-07-01
+monthOnly: true # shows as "July 2025"
 category: essay
 description: Absence, I’ve come to understand, is not simply what remains after someone dies—it is the essence of grief.
 note: a personal essay

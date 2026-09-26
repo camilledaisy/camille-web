@@ -21,6 +21,8 @@ const writing = defineCollection({
     // add new categories here if you want more shelves for your thoughts
     category: z.enum(['essay', 'personal', 'book thoughts', 'culture', 'random']),
     description: z.string().optional(),
+    // true = only show the month and year (e.g. "July 2025") instead of the exact day
+    monthOnly: z.boolean().default(false),
     // a tiny handwritten note that shows next to the post in lists
     note: z.string().optional(),
     // set to true to hide a post while you're still working on it

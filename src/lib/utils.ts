@@ -18,6 +18,19 @@ export function longDate(date: Date) {
   });
 }
 
+/** "July 2025" */
+export function monthYear(date: Date) {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' });
+}
+
+/** stamp/longDate, but month + year only when `monthOnly` is set */
+export function postStamp(date: Date, monthOnly = false) {
+  return monthOnly ? stamp(date).slice(0, 7) : stamp(date);
+}
+export function postLongDate(date: Date, monthOnly = false) {
+  return monthOnly ? monthYear(date) : longDate(date);
+}
+
 /** "sept" style short month */
 export function monthShort(date: Date) {
   return date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' }).toLowerCase();

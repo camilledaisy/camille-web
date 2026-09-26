@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { getWriting, longDate, readingTime, stamp } from '../../lib/utils';
+import { getWriting, postLongDate, postStamp, readingTime } from '../../lib/utils';
 import { site } from '../../site.config';
 
 export async function getStaticPaths() {
@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 
 const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
-const { title, date, category, description, note } = post.data;
+const { title, date, category, description, note, monthOnly } = post.data;
 const { words, minutes } = readingTime(post.body);
 ---
 
@@ -25,7 +25,7 @@ const { words, minutes } = readingTime(post.body);
         <p class="meta kicker">
           <a class="draw" href={`/writing?f=${encodeURIComponent(category)}`}>{category}</a>
           <span aria-hidden="true">·</span>
-          <time datetime={date.toISOString()}>{longDate(date)}</time>
+          <time datetime={date.toISOString()}>{postLongDate(date, monthOnly)}</time>
         </p>
         <h1>{title}</h1>
         {description && <p class="deck">{description}</p>}
@@ -36,7 +36,7 @@ const { words, minutes } = readingTime(post.body);
       <aside class="margin" aria-label="About this post">
         <dl class="meta">
           <dt>filed</dt>
-          <dd>{stamp(date)}</dd>
+          <dd>{postStamp(date, monthOnly)}</dd>
           <dt>under</dt>
           <dd>#{category}</dd>
           <dt>length</dt>

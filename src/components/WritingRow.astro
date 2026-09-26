@@ -1,17 +1,17 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { stamp, tilt } from '../lib/utils';
+import { postStamp, tilt } from '../lib/utils';
 
 interface Props {
   post: CollectionEntry<'writing'>;
   showDescription?: boolean;
 }
 const { post, showDescription = true } = Astro.props;
-const { title, date, category, description, note } = post.data;
+const { title, date, category, description, note, monthOnly } = post.data;
 ---
 
 <li class="entry" data-filter-item={category}>
-  <time class="meta" datetime={date.toISOString()}>{stamp(date)}</time>
+  <time class="meta" datetime={date.toISOString()}>{postStamp(date, monthOnly)}</time>
   <div class="body">
     <a href={`/writing/${post.id}`} class="title" data-cursor="read ✎">{title}</a>
     {
