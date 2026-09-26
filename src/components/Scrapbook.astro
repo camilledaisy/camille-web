@@ -82,7 +82,12 @@ const host = (href = '') => {
                 </div>
               );
             })()}
-          {data.kind === 'note' && <p class="sticky">{data.text}</p>}
+          {data.kind === 'note' && (
+            <p class="sticky">
+              {data.caption && <span class="meta sticky-label">☐ {data.caption}</span>}
+              {data.text}
+            </p>
+          )}
           {data.kind === 'swatch' && (
             <div class="chip">
               <span class="c" style={`background:${data.color}`} />
@@ -270,6 +275,13 @@ const host = (href = '') => {
     box-shadow:
       var(--shadow),
       inset 0 -18px 18px -18px rgb(0 0 0 / 0.2);
+  }
+
+  .sticky-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--ink-soft);
+    font-size: 0.66rem;
   }
 
   .chip {

@@ -5,7 +5,7 @@
 #    image   → src (+ caption)           a taped-in photo
 #    quote   → text (+ caption = who)    a torn-out quote
 #    link    → text + href (+ caption)   a link you love
-#    note    → text                      a sticky note
+#    note    → text (+ caption, e.g. goal)  a sticky note
 #    swatch  → color + text              a paint chip
 #    ticket  → text (+ caption)          a ticket stub
 #    mix     → href (YouTube link) + text  a playable mixtape
@@ -37,6 +37,7 @@
 
 - id: sticky-1
   kind: note
+  caption: goal
   text: start using my film camera again
 
 - id: swatch-sept
