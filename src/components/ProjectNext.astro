@@ -1,18 +1,28 @@
 ---
-/** "next project →" link at the bottom of project pages. */
+/**
+ * "next project →" link at the bottom of project pages.
+ * Pass the current project's id so it never links a page to itself
+ * (when there's only one project, just "← all projects" shows).
+ */
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   next: CollectionEntry<'projects'>;
+  current: string;
 }
-const { next } = Astro.props;
+const { next, current } = Astro.props;
+const hasNext = next.id !== current;
 ---
 
-<nav class="next" aria-label="Next project">
-  <a class="bare" href={`/projects/${next.id}`} data-preview={next.data.image} data-cursor="next one →">
-    <span class="meta">next project →</span>
-    <span class="nt">{next.data.title}</span>
-  </a>
+<nav class="next" aria-label={hasNext ? 'Next project' : 'Projects'}>
+  {
+    hasNext && (
+      <a class="bare" href={`/projects/${next.id}`} data-preview={next.data.image} data-cursor="next one →">
+        <span class="meta">next project →</span>
+        <span class="nt">{next.data.title}</span>
+      </a>
+    )
+  }
   <a class="draw meta" href="/projects">← all projects</a>
 </nav>
 
