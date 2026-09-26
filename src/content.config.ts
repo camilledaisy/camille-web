@@ -63,7 +63,7 @@ const books = defineCollection({
     note: z.string().optional(),
     // cover color — any CSS color. leave empty and one is picked for you
     color: z.string().optional(),
-    // link to your writing about the book, e.g. "/writing/on-rereading"
+    // link to your writing about the book, e.g. "/writing/what-grief-teaches-us-about-knowing"
     thoughts: z.string().optional(),
   }),
 });

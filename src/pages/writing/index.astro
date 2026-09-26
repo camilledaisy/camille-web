@@ -17,7 +17,7 @@ const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
   <div class="wrap">
     <header class="page-head grid">
       <div class="ph">
-        <p class="meta">§ the archive · {posts.length} entries and counting</p>
+        <p class="meta">§ the archive · {posts.length} {posts.length === 1 ? 'entry' : 'entries'} and counting</p>
         <h1>Writing</h1>
         <p class="lede">
           Essays, personal notes, book thoughts, cultural commentary, and things I said out loud to no one. Some are

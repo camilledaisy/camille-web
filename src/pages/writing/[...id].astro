@@ -56,6 +56,8 @@ const { words, minutes } = readingTime(post.body);
       </div>
     </div>
 
+    {
+      (older || newer) && (
     <nav class="grid pager" aria-label="More writing">
       <div class="older">
         {
@@ -78,6 +80,8 @@ const { words, minutes } = readingTime(post.body);
         }
       </div>
     </nav>
+      )
+    }
   </article>
 </Base>
 
