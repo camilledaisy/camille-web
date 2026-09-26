@@ -46,7 +46,7 @@ document.addEventListener('click', (e) => {
 
 /* ---------- theme toggle ---------- */
 function currentTheme() {
-  return root.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  return root.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
   const label = () => {
@@ -58,7 +58,12 @@ document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn
   btn.addEventListener('click', () => {
     const next = currentTheme() === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
-    store.set('theme', next);
+    // remembered for this visit only — the next visit starts light again
+    try {
+      sessionStorage.setItem('theme', next);
+    } catch {
+      /* private mode, etc. */
+    }
     label();
   });
 });

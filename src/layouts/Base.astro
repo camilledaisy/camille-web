@@ -35,10 +35,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap"
     />
     <script is:inline>
-      // apply the saved theme before paint so there's no flash
+      // the site always opens with the lights on. "lights off" only lasts for
+      // the current visit (sessionStorage), so each new visit starts light again.
       try {
-        const t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        localStorage.removeItem('theme'); // forget choices saved by the old version
+        if (sessionStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
       } catch (e) {}
     </script>
   </head>

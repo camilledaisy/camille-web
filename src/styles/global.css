@@ -39,26 +39,7 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --paper: #121712;
-    --paper-2: #1b221a;
-    --paper-3: #171d16;
-    --ink: #e5ead9;
-    --ink-soft: #adb5a0;
-    --ink-faint: #858d78;
-    --rule: rgb(229 234 217 / 0.18);
-    --accent: #a8c874;
-    --blue: #93b3ff;
-    --green: #a8c874;
-    --matcha: #6f8a45;
-    --yellow: #e2c25a;
-    --highlight: #5a4b16;
-    --sticky: #4a4120;
-    --shadow: 2px 3px 0 rgb(0 0 0 / 0.35);
-    color-scheme: dark;
-  }
-}
+/* dark mode only when a visitor turns the lights off (never automatic) */
 :root[data-theme='dark'] {
   --paper: #121712;
   --paper-2: #1b221a;
@@ -121,12 +102,6 @@ body::before {
 :root[data-theme='dark'] body::before {
   mix-blend-mode: screen;
   opacity: 0.18;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) body::before {
-    mix-blend-mode: screen;
-    opacity: 0.18;
-  }
 }
 
 a,
