@@ -21,8 +21,9 @@
   --blue: #2b58a6; /* ballpoint blue: handwriting, underlines, circles */
   --green: #4f6f2a;
   --matcha: #a3bf6e; /* matcha for fills */
-  --highlight: #d3e3a2;
-  --sticky: #dfeab6;
+  --yellow: #efc94c; /* butter yellow: daisy centers, tape */
+  --highlight: #f6e39a; /* highlighter swipe on links + selected text */
+  --sticky: #f8eab0;
   --shadow: 2px 3px 0 rgb(26 33 23 / 0.12);
 
   --f-display: 'Instrument Serif', 'Times New Roman', serif;
@@ -51,8 +52,9 @@
     --blue: #93b3ff;
     --green: #a8c874;
     --matcha: #6f8a45;
-    --highlight: #3a4d22;
-    --sticky: #3b4a25;
+    --yellow: #e2c25a;
+    --highlight: #5a4b16;
+    --sticky: #4a4120;
     --shadow: 2px 3px 0 rgb(0 0 0 / 0.35);
     color-scheme: dark;
   }
@@ -69,8 +71,9 @@
   --blue: #93b3ff;
   --green: #a8c874;
   --matcha: #6f8a45;
-  --highlight: #3a4d22;
-  --sticky: #3b4a25;
+  --yellow: #e2c25a;
+  --highlight: #5a4b16;
+  --sticky: #4a4120;
   --shadow: 2px 3px 0 rgb(0 0 0 / 0.35);
   color-scheme: dark;
 }
@@ -131,7 +134,7 @@ button,
 summary,
 label,
 [role='button'] {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cg fill='%237fa347' stroke='%231a2117' stroke-width='.8'%3E%3Ccircle cx='13' cy='6' r='4.5'/%3E%3Ccircle cx='19.7' cy='10.8' r='4.5'/%3E%3Ccircle cx='17.1' cy='18.7' r='4.5'/%3E%3Ccircle cx='8.9' cy='18.7' r='4.5'/%3E%3Ccircle cx='6.3' cy='10.8' r='4.5'/%3E%3C/g%3E%3Ccircle cx='13' cy='13' r='3.2' fill='%232b58a6' stroke='%231a2117' stroke-width='.8'/%3E%3C/svg%3E")
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cg fill='%237fa347' stroke='%231a2117' stroke-width='.8'%3E%3Ccircle cx='13' cy='6' r='4.5'/%3E%3Ccircle cx='19.7' cy='10.8' r='4.5'/%3E%3Ccircle cx='17.1' cy='18.7' r='4.5'/%3E%3Ccircle cx='8.9' cy='18.7' r='4.5'/%3E%3Ccircle cx='6.3' cy='10.8' r='4.5'/%3E%3C/g%3E%3Ccircle cx='13' cy='13' r='3.2' fill='%23efc94c' stroke='%231a2117' stroke-width='.8'/%3E%3C/svg%3E")
       13 13,
     pointer;
 }
@@ -526,7 +529,7 @@ a:hover {
   position: absolute;
   width: 88px;
   height: 24px;
-  background: rgb(236 222 170 / 0.72);
+  background: rgb(239 205 100 / 0.5);
   border-left: 2px dotted rgb(0 0 0 / 0.06);
   border-right: 2px dotted rgb(0 0 0 / 0.06);
   box-shadow: 0 1px 1px rgb(0 0 0 / 0.08);
@@ -537,7 +540,7 @@ a:hover {
   z-index: 2;
 }
 :root[data-theme='dark'] .tape {
-  background: rgb(200 190 150 / 0.45);
+  background: rgb(226 194 90 / 0.4);
 }
 
 /* polaroid-ish photo */
