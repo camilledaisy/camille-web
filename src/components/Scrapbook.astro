@@ -84,7 +84,7 @@ const host = (href = '') => {
             })()}
           {data.kind === 'note' && (
             <p class="sticky">
-              {data.caption && <span class="meta sticky-label">☐ {data.caption}</span>}
+              {data.caption && <span class="meta sticky-label">{data.caption}</span>}
               {data.text}
             </p>
           )}
@@ -278,10 +278,22 @@ const host = (href = '') => {
   }
 
   .sticky-label {
-    display: block;
-    margin-bottom: 0.4rem;
-    color: var(--ink-soft);
-    font-size: 0.66rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+  }
+  /* a little empty checkbox — still to do */
+  .sticky-label::before {
+    content: '';
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
   }
 
   .chip {
