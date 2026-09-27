@@ -4,7 +4,7 @@ import { hash, inFileOrder, tilt } from '../lib/utils';
 import raw from '../data/scrapbook.yaml?raw';
 
 const items = inFileOrder(await getCollection('scrapbook'), raw);
-const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5 };
+const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5, sticker: 2 };
 
 /**
  * A YouTube link → the pieces needed for a click-to-play embed. Nothing loads
@@ -82,6 +82,12 @@ const host = (href = '') => {
                 </div>
               );
             })()}
+          {data.kind === 'sticker' && (
+            <figure class="sticker">
+              <img src={data.src} alt={data.alt ?? ''} loading="lazy" />
+              {data.caption && <figcaption class="scribble">{data.caption}</figcaption>}
+            </figure>
+          )}
           {data.kind === 'note' && (
             <p class="sticky">
               {data.caption && <span class="meta sticky-label">{data.caption}</span>}
@@ -261,6 +267,28 @@ const host = (href = '') => {
     align-self: flex-end;
     text-transform: none;
     letter-spacing: 0.02em;
+  }
+
+  /* die-cut vinyl sticker: a white outline hugging the shape + a soft shadow */
+  .sticker {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sticker img {
+    width: min(100%, 11rem);
+    height: auto;
+    filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+      drop-shadow(2px 4px 3px rgb(0 0 0 / 0.18));
+    transition: transform 0.45s var(--wobble);
+  }
+  .bit:hover .sticker img {
+    transform: rotate(-6deg) scale(1.04);
+  }
+  .sticker figcaption {
+    margin-top: 0.4rem;
+    font-size: 1.2rem;
   }
 
   .sticky {

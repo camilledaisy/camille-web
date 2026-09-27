@@ -9,6 +9,7 @@
 #    swatch  → color + text              a paint chip
 #    ticket  → text (+ caption)          a ticket stub
 #    mix     → href (YouTube link) + text  a playable mixtape
+#    sticker → src (a .png with a see-through background) + alt  a die-cut sticker
 #
 #  Order matters: things are placed in the order they appear here.
 #  Images go in /public/img/ and are referenced like /img/my-photo.jpg
@@ -34,6 +35,11 @@
   kind: note
   caption: goal
   text: start using my film camera again
+
+- id: sticker-meditating
+  kind: sticker
+  src: /img/stickers/meditating.png
+  alt: A sticker of a small pale-green figure sitting cross-legged, meditating with its eyes closed.
 
 - id: swatch-sept
   kind: swatch

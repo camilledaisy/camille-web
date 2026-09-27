@@ -73,10 +73,12 @@ const books = defineCollection({
 const scrapbook = defineCollection({
   loader: file('src/data/scrapbook.yaml'),
   schema: z.object({
-    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix']),
+    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix', 'sticker']),
     text: z.string().optional(),
     caption: z.string().optional(),
     src: z.string().optional(),
+    // describes an image or sticker for people using screen readers
+    alt: z.string().optional(),
     href: z.string().optional(),
     color: z.string().optional(),
   }),
