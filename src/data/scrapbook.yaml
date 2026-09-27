@@ -50,11 +50,6 @@
   kind: ticket
   text: "ADMIT ONE · Blue Heron (2025)"
 
-- id: sticker-reading
-  kind: sticker
-  src: /img/stickers/reading.png
-  alt: A sticker of a small pale-green figure in big black glasses, sitting and reading a green book.
-
 - id: link-2001
   kind: link
   text: "every single frame of 2001: A Space Odyssey"
