@@ -4,7 +4,7 @@ import { hash, inFileOrder, tilt } from '../lib/utils';
 import raw from '../data/scrapbook.yaml?raw';
 
 const items = inFileOrder(await getCollection('scrapbook'), raw);
-const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5, sticker: 2 };
+const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5, sticker: 2, fortune: 3 };
 
 /**
  * A YouTube link → the pieces needed for a click-to-play embed. Nothing loads
@@ -82,6 +82,32 @@ const host = (href = '') => {
                 </div>
               );
             })()}
+          {data.kind === 'fortune' && (
+            <div class="fortune" data-fortune={JSON.stringify(data.fortunes)}>
+              <button type="button" class="cookie-btn" aria-expanded="false" data-cursor="crack it">
+                <span class="sr-only">Open the fortune cookie</span>
+                <svg class="cookie" viewBox="0 0 200 124" aria-hidden="true">
+                  <g class="half left">
+                    <path class="shell" d="M100 14 C 52 12, 10 46, 10 88 C 10 98, 16 104, 26 108 C 44 96, 76 92, 100 106 Z" />
+                    <path class="pleat" d="M100 106 C 88 78, 70 62, 46 56 C 60 72, 72 88, 76 98" />
+                    <circle cx="42" cy="34" r="1.5" /><circle cx="28" cy="66" r="1.3" /><circle cx="64" cy="26" r="1.2" />
+                  </g>
+                  <g class="half right">
+                    <path class="shell" d="M100 14 C 148 12, 190 46, 190 88 C 190 98, 184 104, 174 108 C 156 96, 124 92, 100 106 Z" />
+                    <path class="pleat" d="M100 106 C 112 78, 130 62, 154 56 C 140 72, 128 88, 124 98" />
+                    <circle cx="158" cy="34" r="1.5" /><circle cx="172" cy="66" r="1.3" /><circle cx="136" cy="26" r="1.2" />
+                  </g>
+                </svg>
+              </button>
+              <p class="slip" aria-live="polite">
+                <span class="slip-text" />
+                <span class="slip-nums meta" aria-hidden="true" />
+              </p>
+              <span class="scribble cookie-hint" aria-hidden="true">
+                {data.caption ?? 'crack me open'}
+              </span>
+            </div>
+          )}
           {data.kind === 'sticker' && (
             <figure class="sticker">
               <img src={data.src} alt={data.alt ?? ''} loading="lazy" />
@@ -267,6 +293,108 @@ const host = (href = '') => {
     align-self: flex-end;
     text-transform: none;
     letter-spacing: 0.02em;
+  }
+
+  /* fortune cookie: two halves that swing apart and a paper slip that slides out */
+  .fortune {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 0.5rem;
+  }
+  .cookie-btn {
+    all: unset;
+    cursor: pointer;
+    width: min(100%, 13rem);
+    position: relative;
+    z-index: 2;
+  }
+  .cookie-btn:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 6px;
+  }
+  .cookie {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(2px 4px 3px rgb(0 0 0 / 0.18));
+  }
+  .cookie .shell {
+    fill: #e9bb68;
+    stroke: #b27f30;
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .cookie .pleat {
+    fill: #d9a24f;
+    stroke: #b27f30;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+  }
+  .cookie circle {
+    fill: #c4893a;
+  }
+  .cookie .half {
+    transform-box: view-box;
+    transform-origin: 100px 110px;
+    transition: transform 0.6s var(--wobble);
+  }
+  .cookie-btn:hover .half.left {
+    transform: rotate(-3deg);
+  }
+  .cookie-btn:hover .half.right {
+    transform: rotate(3deg);
+  }
+  .fortune.open .half.left {
+    transform: translate(-16px, -4px) rotate(-18deg);
+  }
+  .fortune.open .half.right {
+    transform: translate(16px, -4px) rotate(18deg);
+  }
+  .slip {
+    position: relative;
+    z-index: 1;
+    margin: 0.2rem 0 0;
+    width: min(112%, 16rem);
+    padding: 0.7rem 0.9rem 0.55rem;
+    background: #fbfaf4;
+    color: #1a2117;
+    border: 1px solid rgb(0 0 0 / 0.08);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.12);
+    text-align: center;
+    transform: scaleX(0.05) translateY(-2.5rem);
+    opacity: 0;
+    transition:
+      transform 0.55s var(--wobble) 0.15s,
+      opacity 0.2s 0.15s;
+  }
+  .fortune.open .slip {
+    transform: rotate(-2deg) translateY(0.4rem);
+    opacity: 1;
+  }
+  .slip-text {
+    display: block;
+    font-family: var(--f-body);
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+  .slip-nums {
+    display: block;
+    margin-top: 0.4rem;
+    color: #b0452f;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+  .cookie-hint {
+    position: absolute;
+    top: calc(min(100%, 13rem) * 0.62 + 0.9rem);
+    margin: 0;
+    font-size: 1.2rem;
+    transition: opacity 0.3s;
+  }
+  .fortune.open .cookie-hint {
+    opacity: 0;
   }
 
   /* die-cut vinyl sticker: a white outline hugging the shape + a soft shadow */

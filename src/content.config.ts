@@ -73,7 +73,7 @@ const books = defineCollection({
 const scrapbook = defineCollection({
   loader: file('src/data/scrapbook.yaml'),
   schema: z.object({
-    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix', 'sticker']),
+    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix', 'sticker', 'fortune']),
     text: z.string().optional(),
     caption: z.string().optional(),
     src: z.string().optional(),
@@ -81,6 +81,8 @@ const scrapbook = defineCollection({
     alt: z.string().optional(),
     href: z.string().optional(),
     color: z.string().optional(),
+    // for a fortune cookie: the fortunes it can give (one is picked at random)
+    fortunes: z.array(z.string()).default([]),
   }),
 });
 

@@ -10,6 +10,7 @@
 #    ticket  → text (+ caption)          a ticket stub
 #    mix     → href (YouTube link) + text  a playable mixtape
 #    sticker → src (a .png with a see-through background) + alt  a die-cut sticker
+#    fortune → fortunes (a list of sentences)  a fortune cookie that cracks open
 #
 #  Order matters: things are placed in the order they appear here.
 #  Images go in /public/img/ and are referenced like /img/my-photo.jpg
@@ -40,6 +41,22 @@
   kind: sticker
   src: /img/stickers/meditating.png
   alt: A sticker of a small pale-green figure sitting cross-legged, meditating with its eyes closed.
+
+- id: fortune-cookie
+  kind: fortune
+  fortunes:
+    - You are allowed to be a beginner at something new.
+    - The thing you keep thinking about is worth making.
+    - Rest counts as progress too.
+    - Someone is glad you exist today.
+    - Small steps still leave footprints.
+    - Your curiosity will take you somewhere good.
+    - It doesn’t have to be finished to be worth sharing.
+    - Drink some water. Then go be wonderful.
+    - A good book is waiting for you this week.
+    - The questions you’re asking matter more than you think.
+    - Be gentle with yourself. You’re still growing.
+    - Something lovely is on its way to you.
 
 - id: swatch-sept
   kind: swatch
