@@ -48,16 +48,6 @@ const builtStamp = `${built.getUTCFullYear()}.${String(built.getUTCMonth() + 1).
         </ul>
       </div>
 
-      <div class="col webring" aria-label="A pretend webring">
-        <h2 class="meta">the slow web ring</h2>
-        <p>
-          <a class="draw" href="#" data-toast="there's no one there yet. want to start a webring?">← prev</a>
-          <span aria-hidden="true">✿</span>
-          <a class="draw" href="#" data-toast="imagine a random website. a good one.">random</a>
-          <span aria-hidden="true">✿</span>
-          <a class="draw" href="#" data-toast="the next site is still being built (by you?)">next →</a>
-        </p>
-      </div>
     </div>
 
     <ul class="badges" aria-label="Badges">
@@ -92,7 +82,7 @@ const builtStamp = `${built.getUTCFullYear()}.${String(built.getUTCMonth() + 1).
   }
   .cols {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1.4fr;
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 2rem var(--gutter);
     border-top: 1px solid var(--ink);
     padding-top: 1.3rem;
@@ -122,16 +112,6 @@ const builtStamp = `${built.getUTCFullYear()}.${String(built.getUTCMonth() + 1).
   }
   .dot:hover {
     transform: scale(2);
-  }
-  .webring p {
-    font-family: var(--f-mono);
-    font-size: 0.82rem;
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-  .webring span {
-    color: var(--accent);
   }
   .badges {
     list-style: none;
@@ -181,8 +161,7 @@ const builtStamp = `${built.getUTCFullYear()}.${String(built.getUTCMonth() + 1).
     .cols {
       grid-template-columns: 1fr 1fr;
     }
-    .sign,
-    .webring {
+    .sign {
       grid-column: 1 / -1;
     }
   }
