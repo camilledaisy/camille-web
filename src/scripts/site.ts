@@ -222,23 +222,6 @@ document.querySelectorAll<HTMLElement>('[data-yt]').forEach((screen) => {
   });
 });
 
-/* ---------- photo folders: tap / click / Enter to open and close ---------- */
-document.querySelectorAll<HTMLElement>('[data-folder]').forEach((folder) => {
-  const btn = folder.querySelector('button')!;
-  const set = (open: boolean) => {
-    folder.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', String(open));
-  };
-  btn.addEventListener('click', () => set(!folder.classList.contains('open')));
-  // a real mouse closes it by leaving; on phones, tap anywhere else to close
-  folder.addEventListener('pointerleave', (e) => {
-    if (e.pointerType === 'mouse') set(false);
-  });
-  document.addEventListener('click', (e) => {
-    if (!folder.contains(e.target as Node)) set(false);
-  });
-});
-
 /* ---------- petals: click the big name on the homepage ---------- */
 let nameClicks = 0;
 document.querySelectorAll<HTMLElement>('[data-petals]').forEach((el) => {

@@ -4,7 +4,7 @@ import { hash, inFileOrder, tilt } from '../lib/utils';
 import raw from '../data/scrapbook.yaml?raw';
 
 const items = inFileOrder(await getCollection('scrapbook'), raw);
-const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5, sticker: 2, folder: 4 };
+const spans: Record<string, number> = { image: 3, quote: 4, link: 3, note: 2, swatch: 2, ticket: 4, mix: 5, sticker: 2 };
 
 /**
  * A YouTube link → the pieces needed for a click-to-play embed. Nothing loads
@@ -82,36 +82,6 @@ const host = (href = '') => {
                 </div>
               );
             })()}
-          {data.kind === 'folder' && (
-            <div class="fldr" data-folder>
-              <span class="folder-back" aria-hidden="true">
-                <span class="folder-tab" />
-              </span>
-              <span class="folder-photos" role="list" aria-label={data.text ?? 'photos'}>
-                {data.photos.map((ph, i) => (
-                  <img
-                    role="listitem"
-                    src={ph.src}
-                    alt={ph.alt}
-                    loading="lazy"
-                    style={`--i:${i};--mid:${(data.photos.length - 1) / 2}`}
-                  />
-                ))}
-              </span>
-              <button
-                type="button"
-                class="folder-btn"
-                aria-expanded="false"
-                data-cursor="peek inside"
-                aria-label={`Open the ${data.text ?? 'photos'} folder`}
-              >
-                <span class="folder-front" aria-hidden="true">
-                  <span class="folder-name">{data.text ?? 'photos'}</span>
-                  <span class="folder-label">{data.caption ?? `${data.photos.length} photos`}</span>
-                </span>
-              </button>
-            </div>
-          )}
           {data.kind === 'sticker' && (
             <figure class="sticker">
               <img src={data.src} alt={data.alt ?? ''} loading="lazy" />
@@ -297,119 +267,6 @@ const host = (href = '') => {
     align-self: flex-end;
     text-transform: none;
     letter-spacing: 0.02em;
-  }
-
-  /* a manila folder; photos fan out of it on hover / focus / tap */
-  .fldr {
-    --manila: #e3c77e;
-    --manila-dark: #cfae5c;
-    position: relative;
-    margin-top: 2.5rem;
-    aspect-ratio: 5 / 3.4;
-    transition: margin-top 0.5s var(--wobble);
-  }
-  /* on phones, make room above the folder when it opens so the photos don't cover the mix */
-  @media (max-width: 560px) {
-    .fldr.open {
-      margin-top: 11rem;
-    }
-  }
-  .folder-btn {
-    all: unset;
-    position: absolute;
-    inset: 0;
-    cursor: pointer;
-  }
-  .folder-btn:focus-visible {
-    outline: 2px dashed var(--accent);
-    outline-offset: 6px;
-  }
-  .folder-back {
-    position: absolute;
-    inset: 12% 0 0 0;
-    background: var(--manila-dark);
-    border-radius: 4px 6px 4px 4px;
-    box-shadow: var(--shadow);
-  }
-  .folder-tab {
-    position: absolute;
-    left: 0;
-    bottom: calc(100% - 1px);
-    width: 34%;
-    height: 1.3rem;
-    background: var(--manila-dark);
-    border-radius: 6px 6px 0 0;
-  }
-  .folder-name {
-    margin-right: auto;
-    font-family: var(--f-hand);
-    font-size: 1.6rem;
-    line-height: 1;
-    color: #3b2f12;
-  }
-  .folder-photos {
-    z-index: 1;
-    position: absolute;
-    inset: 18% 8% 14% 8%;
-  }
-  .folder-photos img {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border: 5px solid #fbfaf4;
-    box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
-    /* closed: stacked, a little crooked, peeking out of the top */
-    transform: translateY(calc(var(--i) * -5% - 4%)) rotate(calc((var(--i) - var(--mid)) * 3deg));
-    transition: transform 0.55s var(--wobble);
-    transition-delay: calc(var(--i) * 40ms);
-  }
-  .folder-front {
-    z-index: 2;
-    position: absolute;
-    inset: 34% -1% -1% -1%;
-    background: var(--manila);
-    border-radius: 3px 3px 5px 5px;
-    box-shadow: 0 -2px 6px rgb(0 0 0 / 0.12);
-    transform-origin: bottom center;
-    transition: transform 0.5s var(--wobble);
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 0.6rem;
-    padding: 0.7rem 0.9rem;
-  }
-  .folder-label {
-    font-family: var(--f-mono);
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #5a4a1f;
-    border: 1px solid currentColor;
-    padding: 0.1rem 0.4rem;
-  }
-  /* open: the front tips forward and the photos fan out above */
-  .fldr:hover .folder-front,
-  .fldr.open .folder-front,
-  .fldr:focus-within .folder-front {
-    transform: perspective(600px) rotateX(-38deg);
-  }
-  .fldr:hover .folder-photos img,
-  .fldr.open .folder-photos img,
-  .fldr:has(.folder-btn:focus-visible) .folder-photos img {
-    transform: translate(calc((var(--i) - var(--mid)) * 46%), calc(-92% + (var(--i) - var(--mid)) * (var(--i) - var(--mid)) * 10%))
-      rotate(calc((var(--i) - var(--mid)) * 9deg)) scale(0.8);
-  }
-  .fldr.open .folder-photos img:hover,
-  .fldr:hover .folder-photos img:hover {
-    z-index: 3;
-    transform: translate(calc((var(--i) - var(--mid)) * 46%), -100%) rotate(0deg) scale(0.95);
-  }
-  /* the scrapbook tilt makes fanned photos look odd; keep the folder straighter */
-  .folder-bit {
-    --rot: 1deg !important;
   }
 
   /* die-cut vinyl sticker: a white outline hugging the shape + a soft shadow */

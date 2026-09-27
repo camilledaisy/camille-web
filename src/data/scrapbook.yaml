@@ -10,7 +10,6 @@
 #    ticket  → text (+ caption)          a ticket stub
 #    mix     → href (YouTube link) + text  a playable mixtape
 #    sticker → src (a .png with a see-through background) + alt  a die-cut sticker
-#    folder  → text (tab label) + photos (a list of src + alt)  photos that fan out
 #
 #  Order matters: things are placed in the order they appear here.
 #  Images go in /public/img/ and are referenced like /img/my-photo.jpg
@@ -20,17 +19,6 @@
   kind: mix
   text: a mix on repeat lately
   href: https://www.youtube.com/watch?v=uxEsOvNd52s&list=PL_hJd_gOWkPwf1NWohPwDNNzXbOeyQMCF&index=2
-
-- id: folder-camera-roll
-  kind: folder
-  text: camera roll
-  photos:
-    - src: /img/photos/window.jpg
-      alt: Looking out a window edged in blue tape at a big yellow-green tree against a clear blue sky, with power lines crossing in front.
-    - src: /img/photos/matcha-walk.jpg
-      alt: Looking down at a sidewalk, holding an iced matcha drink with little daisies floating on top, one black shoe stepping forward.
-    - src: /img/photos/bunny.jpg
-      alt: A spray-painted brown bunny face on white-painted asphalt next to a spray can, beside the hem of a white ruffled skirt and black studded flats.
 
 - id: quote-siken
   kind: quote
