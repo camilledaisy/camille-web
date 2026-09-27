@@ -57,14 +57,42 @@ document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn
   label();
   btn.addEventListener('click', () => {
     const next = currentTheme() === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    // remembered for this visit only — the next visit starts light again
-    try {
-      sessionStorage.setItem('theme', next);
-    } catch {
-      /* private mode, etc. */
+    const apply = () => {
+      root.dataset.theme = next;
+      // remembered for this visit only — the next visit starts light again
+      try {
+        sessionStorage.setItem('theme', next);
+      } catch {
+        /* private mode, etc. */
+      }
+      label();
+    };
+
+    if (calm) return apply();
+
+    // the new theme spreads out in a circle from the button, like a lamp
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
+    if (doc.startViewTransition) {
+      const r = btn.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      const t = doc.startViewTransition(apply);
+      t.ready.then(() => {
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 750, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      });
+      return;
     }
-    label();
+
+    // older browsers: a soft cross-fade instead
+    root.classList.add('theme-fade');
+    apply();
+    setTimeout(() => root.classList.remove('theme-fade'), 700);
   });
 });
 
