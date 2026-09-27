@@ -57,7 +57,7 @@ This mimicry may have felt like a connection, but it was actually a form of disa
 
 ## Analysis
 
-At times, I treated my father as a riddle to be solved. I dissected his life for answers, asked family members about his childhood, traced his behaviours to childhood woods, constructed elaborate theories about his silences. Analysis felt safer than feeling. But in reducing him to a case study, a person to be solved, I lost something essential: the man himself–the flawed, funny, vibrantly ordinary, and annoyingly alive human being in ways that theories couldn’t capture.
+At times, I treated my father as a riddle to be solved. I dissected his life for answers, asked family members about his childhood, traced his behaviours to childhood wounds, constructed elaborate theories about his silences. Analysis felt safer than feeling. But in reducing him to a case study, a person to be solved, I lost something essential: the man himself–the flawed, funny, vibrantly ordinary, and annoyingly alive human being in ways that theories couldn’t capture.
 
 This analytical approach was both necessary and insufficient. It was necessary because it allowed me to see him more clearly, to recognize the humanity beneath the mythology I had constructed. But it treated him as an object of knowledge rather than a subject of love, assuming that understanding could substitute for presence, that comprehension could heal the wound of absence.
 

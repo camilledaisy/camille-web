@@ -44,11 +44,6 @@
   kind: ticket
   text: "ADMIT ONE · Blue Heron (2025)"
 
-- id: quote-oliver
-  kind: quote
-  text: Instructions for living a life. Pay attention. Be astonished. Tell about it.
-  caption: Mary Oliver
-
 - id: link-2001
   kind: link
   text: "every single frame of 2001: A Space Odyssey"
