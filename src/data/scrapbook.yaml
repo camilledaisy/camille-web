@@ -55,3 +55,8 @@
   text: "every single frame of 2001: A Space Odyssey"
   href: https://www.everysingleframe.com/2001aspaceodyssey
   caption: everysingleframe.com
+
+- id: link-sound-of-love
+  kind: link
+  text: if you love, love
+  href: https://thesoundof.love/
