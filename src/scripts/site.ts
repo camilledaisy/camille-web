@@ -222,12 +222,11 @@ document.querySelectorAll<HTMLElement>('[data-yt]').forEach((screen) => {
   });
 });
 
-/* ---------- fortune cookies: crack open for a random fortune ---------- */
+/* ---------- lucky star: unfold it for a random message ---------- */
 document.querySelectorAll<HTMLElement>('[data-fortune]').forEach((box) => {
   const fortunes: string[] = JSON.parse(box.dataset.fortune || '[]');
   const btn = box.querySelector('button')!;
   const text = box.querySelector<HTMLElement>('.slip-text')!;
-  const nums = box.querySelector<HTMLElement>('.slip-nums')!;
   let last = -1;
   btn.addEventListener('click', () => {
     const open = !box.classList.contains('open');
@@ -236,14 +235,12 @@ document.querySelectorAll<HTMLElement>('[data-fortune]').forEach((box) => {
       if (fortunes.length > 1 && i === last) i = (i + 1) % fortunes.length;
       last = i;
       text.textContent = fortunes[i];
-      // lucky numbers, like a real one
-      nums.textContent = 'lucky numbers ' + Array.from({ length: 5 }, () => 1 + Math.floor(Math.random() * 49)).join(' ');
     } else if (!open) {
       text.textContent = '';
     }
     box.classList.toggle('open', open);
     btn.setAttribute('aria-expanded', String(open));
-    btn.querySelector('.sr-only')!.textContent = open ? 'Close the fortune cookie' : 'Open the fortune cookie';
+    btn.querySelector('.sr-only')!.textContent = open ? 'Fold the lucky star back up' : 'Unfold the lucky star';
   });
 });
 

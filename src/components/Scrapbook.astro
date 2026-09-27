@@ -84,28 +84,26 @@ const host = (href = '') => {
             })()}
           {data.kind === 'fortune' && (
             <div class="fortune" data-fortune={JSON.stringify(data.fortunes)}>
-              <button type="button" class="cookie-btn" aria-expanded="false" data-cursor="crack it">
-                <span class="sr-only">Open the fortune cookie</span>
-                <svg class="cookie" viewBox="0 0 200 124" aria-hidden="true">
-                  <g class="half left">
-                    <path class="shell" d="M100 14 C 52 12, 10 46, 10 88 C 10 98, 16 104, 26 108 C 44 96, 76 92, 100 106 Z" />
-                    <path class="pleat" d="M100 106 C 88 78, 70 62, 46 56 C 60 72, 72 88, 76 98" />
-                    <circle cx="42" cy="34" r="1.5" /><circle cx="28" cy="66" r="1.3" /><circle cx="64" cy="26" r="1.2" />
-                  </g>
-                  <g class="half right">
-                    <path class="shell" d="M100 14 C 148 12, 190 46, 190 88 C 190 98, 184 104, 174 108 C 156 96, 124 92, 100 106 Z" />
-                    <path class="pleat" d="M100 106 C 112 78, 130 62, 154 56 C 140 72, 128 88, 124 98" />
-                    <circle cx="158" cy="34" r="1.5" /><circle cx="172" cy="66" r="1.3" /><circle cx="136" cy="26" r="1.2" />
+              <button type="button" class="star-btn" aria-expanded="false" data-cursor="make a wish">
+                <span class="sr-only">Unfold the lucky star</span>
+                <svg class="lstar" viewBox="0 0 200 200" aria-hidden="true">
+                  <g class="lstar-body">
+                    <polygon class="puff" points="100.0,26.0 123.5,71.6 174.2,79.9 138.0,116.4 145.8,167.1 100.0,144.0 54.2,167.1 62.0,116.4 25.8,79.9 76.5,71.6" />
+                    <g class="shade"><polygon points="100,104 100.0,26.0 123.5,71.6" /><polygon points="100,104 174.2,79.9 138.0,116.4" /><polygon points="100,104 145.8,167.1 100.0,144.0" /><polygon points="100,104 54.2,167.1 62.0,116.4" /><polygon points="100,104 25.8,79.9 76.5,71.6" /></g>
+                    <g class="facets"><line x1="100" y1="104" x2="123.5" y2="71.6" /><line x1="100" y1="104" x2="138.0" y2="116.4" /><line x1="100" y1="104" x2="100.0" y2="144.0" /><line x1="100" y1="104" x2="62.0" y2="116.4" /><line x1="100" y1="104" x2="76.5" y2="71.6" /><line class="ridge" x1="100" y1="104" x2="100.0" y2="26.0" /><line class="ridge" x1="100" y1="104" x2="174.2" y2="79.9" /><line class="ridge" x1="100" y1="104" x2="145.8" y2="167.1" /><line class="ridge" x1="100" y1="104" x2="54.2" y2="167.1" /><line class="ridge" x1="100" y1="104" x2="25.8" y2="79.9" /></g>
+                    <ellipse class="shine" cx="78" cy="74" rx="10" ry="5" transform="rotate(-30 78 74)" />
                   </g>
                 </svg>
               </button>
               <p class="slip" aria-live="polite">
                 <span class="slip-text" />
-                <span class="slip-nums meta" aria-hidden="true" />
               </p>
-              <span class="scribble cookie-hint" aria-hidden="true">
-                {data.caption ?? 'crack me open'}
+              <span class="scribble star-hint" aria-hidden="true">
+                {data.caption ?? 'pick a lucky star'}
               </span>
+              <span class="twinkle t1" aria-hidden="true">✦</span>
+              <span class="twinkle t2" aria-hidden="true">✧</span>
+              <span class="twinkle t3" aria-hidden="true">✦</span>
             </div>
           )}
           {data.kind === 'sticker' && (
@@ -295,7 +293,7 @@ const host = (href = '') => {
     letter-spacing: 0.02em;
   }
 
-  /* fortune cookie: two halves that swing apart and a paper slip that slides out */
+  /* lucky star: a puffy paper star that spins open, and its paper strip unrolls with a message */
   .fortune {
     position: relative;
     display: flex;
@@ -303,54 +301,93 @@ const host = (href = '') => {
     align-items: center;
     padding-top: 0.5rem;
   }
-  .cookie-btn {
+  .star-btn {
     all: unset;
     cursor: pointer;
     width: min(100%, 13rem);
     position: relative;
     z-index: 2;
   }
-  .cookie-btn:focus-visible {
+  .star-btn:focus-visible {
     outline: 2px dashed var(--accent);
     outline-offset: 6px;
   }
-  .cookie {
-    width: 100%;
+  .lstar {
+    width: 72%;
     height: auto;
+    margin: 0 auto;
+    display: block;
     overflow: visible;
-    filter: drop-shadow(2px 4px 3px rgb(0 0 0 / 0.18));
+    filter: drop-shadow(2px 4px 3px rgb(0 0 0 / 0.16));
   }
-  .cookie .shell {
-    fill: #e9bb68;
-    stroke: #b27f30;
-    stroke-width: 2;
-    stroke-linejoin: round;
-  }
-  .cookie .pleat {
-    fill: #d9a24f;
-    stroke: #b27f30;
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-  }
-  .cookie circle {
-    fill: #c4893a;
-  }
-  .cookie .half {
+  .lstar-body {
     transform-box: view-box;
-    transform-origin: 100px 110px;
-    transition: transform 0.6s var(--wobble);
+    transform-origin: 100px 104px;
+    transition: transform 0.7s var(--wobble);
   }
-  .cookie-btn:hover .half.left {
-    transform: rotate(-3deg);
+  .lstar .puff {
+    fill: #f6d86b;
+    stroke: #f6d86b;
+    stroke-width: 18;
+    stroke-linejoin: round;
   }
-  .cookie-btn:hover .half.right {
-    transform: rotate(3deg);
+  .lstar .shade polygon {
+    fill: #e9bf45;
+    opacity: 0.7;
   }
-  .fortune.open .half.left {
-    transform: translate(-16px, -4px) rotate(-18deg);
+  .lstar .facets line {
+    stroke: #d6a932;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.7;
   }
-  .fortune.open .half.right {
-    transform: translate(16px, -4px) rotate(18deg);
+  .lstar .facets .ridge {
+    stroke: #fff4c4;
+    opacity: 0.6;
+  }
+  .lstar .shine {
+    fill: #fffbe8;
+    opacity: 0.75;
+  }
+  .star-btn:hover .lstar-body {
+    transform: rotate(-10deg) scale(1.05);
+  }
+  .fortune.open .lstar-body {
+    transform: rotate(144deg) scale(0.82);
+  }
+  .twinkle {
+    position: absolute;
+    color: var(--yellow);
+    font-size: 1rem;
+    pointer-events: none;
+    animation: twinkle 2.4s ease-in-out infinite;
+  }
+  .t1 {
+    top: 0.2rem;
+    right: 12%;
+  }
+  .t2 {
+    top: 42%;
+    left: 6%;
+    font-size: 0.8rem;
+    animation-delay: 0.8s;
+  }
+  .t3 {
+    top: 30%;
+    right: 4%;
+    font-size: 0.7rem;
+    animation-delay: 1.5s;
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.2;
+      transform: scale(0.7);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
   }
   .slip {
     position: relative;
@@ -363,14 +400,15 @@ const host = (href = '') => {
     border: 1px solid rgb(0 0 0 / 0.08);
     box-shadow: 0 2px 4px rgb(0 0 0 / 0.12);
     text-align: center;
-    transform: scaleX(0.05) translateY(-2.5rem);
+    transform-origin: top center;
+    transform: translateY(-3rem) scaleY(0.05);
     opacity: 0;
     transition:
       transform 0.55s var(--wobble) 0.15s,
       opacity 0.2s 0.15s;
   }
   .fortune.open .slip {
-    transform: rotate(-2deg) translateY(0.4rem);
+    transform: rotate(-2deg) translateY(-0.6rem);
     opacity: 1;
   }
   .slip-text {
@@ -379,21 +417,14 @@ const host = (href = '') => {
     font-size: 0.98rem;
     line-height: 1.35;
   }
-  .slip-nums {
-    display: block;
-    margin-top: 0.4rem;
-    color: #b0452f;
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
-  }
-  .cookie-hint {
+  .star-hint {
     position: absolute;
-    top: calc(min(100%, 13rem) * 0.62 + 0.9rem);
+    top: calc(min(100%, 13rem) * 0.8);
     margin: 0;
     font-size: 1.2rem;
     transition: opacity 0.3s;
   }
-  .fortune.open .cookie-hint {
+  .fortune.open .star-hint {
     opacity: 0;
   }
 
