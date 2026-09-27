@@ -73,7 +73,7 @@ const books = defineCollection({
 const scrapbook = defineCollection({
   loader: file('src/data/scrapbook.yaml'),
   schema: z.object({
-    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix', 'sticker']),
+    kind: z.enum(['image', 'quote', 'link', 'note', 'swatch', 'ticket', 'mix', 'sticker', 'folder']),
     text: z.string().optional(),
     caption: z.string().optional(),
     src: z.string().optional(),
@@ -81,6 +81,8 @@ const scrapbook = defineCollection({
     alt: z.string().optional(),
     href: z.string().optional(),
     color: z.string().optional(),
+    // for a folder: the photos inside it (src + alt description each)
+    photos: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
   }),
 });
 
