@@ -82,6 +82,14 @@ Everything on `/projects/communimate` is written in **`src/data/communimate.ts`*
 
 The case-study building blocks (status chips, timeline, source cards…) live in `src/components/case-study/` and can be reused for future case studies. A project with `customPage: true` in its Markdown file uses its own page in `src/pages/projects/` instead of the standard template.
 
+### The guestbook (homepage scrapbook)
+
+Visitors pick a stamp and click the card to leave it; everyone sees everyone's stamps. The stamps are stored by a small Netlify Function (`netlify/functions/stamps.mts`) using Netlify Blobs — no account or setup needed, it works automatically once the site is deployed on Netlify. (On a local preview the card says it opens once the site is live.)
+
+- Visitors can only leave stamps (a shape and a spot), never text, so there's nothing to moderate.
+- Each visitor can leave up to 5 stamps per visit, and the function is rate-limited.
+- To clear all stamps: Netlify dashboard → your site → **Blobs** → the `guestbook` store → delete its entries.
+
 ### Books
 
 In `src/data/books.yaml`, every book has a `shelf`: `reading` (now), `finished` (recently finished — newest at the top), `read` (a while ago), or `want` (the to-read pile). Add `favorite: true` to put any book on the Favorites shelf. Finished a book? Change its shelf from `reading` to `finished` and move it to the top of that group. Dates (`finished: 2026-10-01`) and a `rating` are optional. The comment at the top of the file lists every option.

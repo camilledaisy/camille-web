@@ -244,6 +244,111 @@ document.querySelectorAll<HTMLElement>('[data-fortune]').forEach((box) => {
   });
 });
 
+/* ---------- guestbook: shared stamps (stored by netlify/functions/stamps.mts) ---------- */
+document.querySelectorAll<HTMLElement>('[data-guestbook]').forEach((gb) => {
+  const page = gb.querySelector<HTMLElement>('.gb-page')!;
+  const count = gb.querySelector<HTMLElement>('.gb-count')!;
+  const stampBtn = gb.querySelector<HTMLButtonElement>('.gb-stamp')!;
+  const picks = [...gb.querySelectorAll<HTMLButtonElement>('.gb-pick')];
+  // theme colors, so stamps brighten automatically in dark mode
+  const inks = ['var(--accent)', 'var(--blue)', '#c9573f', '#c9a227', 'var(--blue)', 'var(--accent)'];
+  const PER_VISIT = 5;
+  let shape = 0;
+  let total = 0;
+  let online = true;
+
+  type Stamp = { x: number; y: number; s: number; r: number };
+  const clamp = (n: number) => Math.min(1, Math.max(0, Number(n) || 0));
+
+  const draw = (st: Stamp, isNew = false) => {
+    const s = Math.min(5, Math.max(0, Math.floor(Number(st.s) || 0)));
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', isNew ? 'ink new' : 'ink');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.left = `${clamp(st.x) * 100}%`;
+    svg.style.top = `${clamp(st.y) * 100}%`;
+    svg.style.setProperty('--r', `${Number(st.r) || 0}deg`);
+    svg.style.transform = `rotate(${Number(st.r) || 0}deg)`;
+    svg.style.fill = inks[s];
+    const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    use.setAttribute('href', `#st-${s}`);
+    svg.append(use);
+    page.append(svg);
+  };
+
+  const used = () => {
+    try {
+      return Number(sessionStorage.getItem('stamps-used') || 0);
+    } catch {
+      return 0;
+    }
+  };
+  const setUsed = (n: number) => {
+    try {
+      sessionStorage.setItem('stamps-used', String(n));
+    } catch {
+      /* ignore */
+    }
+  };
+  const updateCount = () => {
+    const left = PER_VISIT - used();
+    const who = online
+      ? total === 1
+        ? '1 stamp so far'
+        : `${total} stamps so far`
+      : 'the guestbook opens once the site is live';
+    count.textContent = left <= 0 ? `${who} · thank you for stopping by ✿` : who;
+    stampBtn.disabled = left <= 0;
+    page.style.cursor = left <= 0 ? 'default' : '';
+  };
+
+  picks.forEach((p) =>
+    p.addEventListener('click', () => {
+      shape = Number(p.dataset.shape);
+      picks.forEach((q) => q.setAttribute('aria-pressed', String(q === p)));
+    }),
+  );
+
+  const place = async (x: number, y: number) => {
+    if (used() >= PER_VISIT) return;
+    setUsed(used() + 1);
+    const local: Stamp = { x, y, s: shape, r: Math.round(Math.random() * 50 - 25) };
+    draw(local, true);
+    total += 1;
+    updateCount();
+    if (!online) return;
+    try {
+      const res = await fetch('/api/stamps', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ x: local.x, y: local.y, s: local.s }),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+    } catch {
+      count.textContent = 'couldn’t save that one — try again in a bit';
+    }
+  };
+
+  page.addEventListener('click', (e) => {
+    const r = page.getBoundingClientRect();
+    place(clamp((e.clientX - r.left) / r.width), clamp((e.clientY - r.top) / r.height));
+  });
+  // keyboard / screen reader friendly: stamp somewhere random
+  stampBtn.addEventListener('click', () => place(0.08 + Math.random() * 0.84, 0.12 + Math.random() * 0.76));
+
+  fetch('/api/stamps')
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((book: { stamps: Stamp[]; total: number }) => {
+      (book.stamps || []).forEach((st) => draw(st));
+      total = Number(book.total) || 0;
+      updateCount();
+    })
+    .catch(() => {
+      online = false;
+      updateCount();
+    });
+});
+
 /* ---------- petals: click the big name on the homepage ---------- */
 let nameClicks = 0;
 document.querySelectorAll<HTMLElement>('[data-petals]').forEach((el) => {

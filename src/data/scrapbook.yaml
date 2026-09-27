@@ -11,6 +11,7 @@
 #    mix     → href (YouTube link) + text  a playable mixtape
 #    sticker → src (a .png with a see-through background) + alt  a die-cut sticker
 #    fortune → fortunes (a list of sentences)  a lucky star that unfolds a message
+#    guestbook → (text = title, caption = hint)  a card visitors stamp; shared once live on Netlify
 #
 #  Order matters: things are placed in the order they appear here.
 #  Images go in /public/img/ and are referenced like /img/my-photo.jpg
@@ -57,6 +58,9 @@
     - The questions you’re asking matter more than you think.
     - Be gentle with yourself. You’re still growing.
     - Something lovely is on its way to you.
+
+- id: guestbook
+  kind: guestbook
 
 - id: swatch-sept
   kind: swatch
