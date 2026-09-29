@@ -9,6 +9,14 @@
 import { getStore } from '@netlify/blobs';
 import type { Config, Context } from '@netlify/functions';
 
+/**
+ * Which "page" of the guestbook is showing. To wipe the card clean and start
+ * fresh, change this to any new name (e.g. 'page-3') and publish — visitors
+ * will see an empty card. Old stamps aren't shown anymore (they just sit
+ * unused in Netlify's storage).
+ */
+const GUESTBOOK_PAGE = 'page-2';
+
 /** how many different stamp shapes exist (must match the site's stamp picker) */
 const SHAPES = 6;
 /** the card only shows the newest stamps so it doesn't get too crowded */
@@ -56,7 +64,7 @@ export function fromKey(key: string): Stamp | null {
 }
 
 export default async (req: Request, _context: Context) => {
-  const store = getStore({ name: 'guestbook', consistency: 'strong' });
+  const store = getStore({ name: `guestbook-${GUESTBOOK_PAGE}`, consistency: 'strong' });
 
   if (req.method === 'GET') {
     const { blobs } = await store.list();

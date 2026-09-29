@@ -88,7 +88,7 @@ Visitors pick a stamp and click the card to leave it; everyone sees everyone's s
 
 - Visitors can only leave stamps (a shape and a spot), never text, so there's nothing to moderate.
 - Each visitor can leave up to 5 stamps per visit, and the function is rate-limited.
-- To clear all stamps: Netlify dashboard → your site → **Blobs** → the `guestbook` store → delete its entries.
+- To clear all stamps and start a fresh card: in `netlify/functions/stamps.mts`, change `GUESTBOOK_PAGE` to a new name (e.g. `'page-3'`) and publish.
 
 ### Books
 
