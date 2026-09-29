@@ -1,0 +1,1359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jar of Lucky Stars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  /* afternoon is the base palette; the other times of day override it below */
+  :root {
+    color-scheme: light;
+    --frame: #f1ece5;     /* cream mat around the painting */
+    --paper: #f7f3ec;     /* watercolour paper */
+    --mint: #d6ebe2;
+    --lilac: #e4dcef;
+    --blush: #f2dce2;
+    --butter: #f5eecd;
+    --sky: #dbe8f0;
+    --ink: #6f667b;       /* soft graphite */
+    --ink-soft: #9a92a4;
+    --pencil: rgba(111, 102, 123, .45);
+    --glass: rgba(255, 255, 255, .3);
+    --lid: rgba(240, 230, 208, .75);
+    --glint: .55;
+    --thread: rgba(111, 102, 123, .3);
+    --thread-rose: rgba(214, 150, 168, .5);
+    --thread-gold: rgba(205, 180, 110, .55);
+    --thread-sky: rgba(140, 176, 200, .45);
+    --grain-opacity: .22;
+    --grain-blend: multiply;
+    --night: 0;
+    --twinkle: #d2a94e;
+    --twinkle-glow: rgba(255, 236, 190, .9);
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .48 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    --serif: "Cormorant Garamond", "Cormorant", Georgia, serif;
+  }
+  :root[data-time="morning"] {
+    --frame: #f3efe7;
+    --paper: #f9f6ee;
+    --mint: #dff0e6;
+    --lilac: #ece5f2;
+    --blush: #f7e0e2;
+    --butter: #f8f1d2;
+    --sky: #e1edf4;
+    --ink: #736a80;
+    --ink-soft: #a098aa;
+    --twinkle: #d6ae58;
+  }
+  :root[data-time="dusk"] {
+    --frame: #eee4df;
+    --paper: #f5ebe6;
+    --mint: #efd8cf;
+    --lilac: #dccfec;
+    --blush: #f0c9d4;
+    --butter: #f6dfbd;
+    --sky: #d3d9ec;
+    --ink: #685b73;
+    --ink-soft: #978aa2;
+    --lid: rgba(242, 222, 206, .75);
+    --twinkle: #dc9a72;
+    --twinkle-glow: rgba(255, 228, 210, .9);
+  }
+  :root[data-time="night"] {
+    color-scheme: dark;
+    --frame: #1b1c2e;
+    --paper: #24263d;
+    --mint: #2d4853;
+    --lilac: #45396a;
+    --blush: #553d5c;
+    --butter: #5d5775;
+    --sky: #313e68;
+    --ink: #e6e1f0;
+    --ink-soft: #a9a2bf;
+    --pencil: rgba(230, 225, 240, .42);
+    --glass: rgba(255, 255, 255, .06);
+    --lid: rgba(215, 205, 235, .2);
+    --glint: .22;
+    --thread: rgba(230, 225, 240, .24);
+    --thread-rose: rgba(240, 180, 198, .45);
+    --thread-gold: rgba(240, 215, 140, .55);
+    --thread-sky: rgba(160, 200, 225, .45);
+    --grain-opacity: .1;
+    --grain-blend: screen;
+    --night: 1;
+    --twinkle: #fff3d2;
+    --twinkle-glow: rgba(255, 236, 190, .95);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; margin: 0; }
+
+  body {
+    font-family: var(--serif);
+    color: var(--ink);
+    background: var(--frame);
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 100%;
+    padding-block: 32px;
+    padding-inline: 28px;
+    transition: background-color 1.2s, color 1.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ---------- watercolour paper inside a cream mat ---------- */
+  .dream {
+    position: fixed;
+    inset: 12px;
+    overflow: hidden;
+    background: var(--paper);
+    pointer-events: none;
+    z-index: -1;
+    box-shadow: inset 0 0 0 1px rgba(111, 102, 123, .06);
+    transition: background-color 1.2s;
+  }
+  .wash {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(56px);
+    opacity: .85;
+    animation: drift 24s ease-in-out infinite alternate;
+    transition: background-color 1.2s;
+  }
+  .wash.w1 { width: 55vmax; height: 45vmax; left: -20vmax; top: 10%; background-color: var(--mint); }
+  .wash.w2 { width: 45vmax; height: 40vmax; right: -16vmax; top: 18%; background-color: var(--lilac); animation-duration: 30s; }
+  .wash.w3 { width: 40vmax; height: 30vmax; left: 20%; bottom: -10vmax; background-color: var(--sky); animation-duration: 27s; }
+  .wash.w4 { width: 30vmax; height: 26vmax; left: 8%; top: -8vmax; background-color: var(--blush); opacity: .6; animation-duration: 33s; }
+  .wash.w5 { width: 34vmax; height: 26vmax; right: 4%; bottom: 6%; background-color: var(--butter); opacity: .7; animation-duration: 21s; }
+  .wash.w6 { width: 26vmax; height: 20vmax; left: 44%; top: 4%; background-color: var(--sky); opacity: .5; animation-duration: 29s; }
+  @keyframes drift {
+    to { transform: translate(3vmax, 2vmax) scale(1.06); }
+  }
+  .dream svg { position: absolute; left: 0; width: 100%; }
+  .dream .dabs, .dream .nightsky { top: 0; height: 100%; }
+  .nightsky { opacity: var(--night); transition: opacity 1.4s; }
+  .dabs { opacity: calc(1 - var(--night) * .65); transition: opacity 1.4s; }
+  .nightsky circle { animation: twinkle 4s ease-in-out infinite; }
+  @keyframes twinkle { 50% { opacity: .25; } }
+  .pencil { stroke: var(--pencil); }
+
+  /* little four-point twinkles that come and go */
+  .twinkles { position: absolute; inset: 0; pointer-events: none; }
+  .stage .twinkles { z-index: 2; }
+  .twinkle {
+    position: absolute;
+    overflow: visible;
+    opacity: 0;
+    fill: var(--twinkle);
+    filter: drop-shadow(0 0 3px var(--twinkle-glow)) drop-shadow(0 0 8px var(--twinkle-glow));
+    transition: fill 1.2s;
+  }
+  .dream::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--grain);
+    background-size: 200px;
+    opacity: var(--grain-opacity);
+    mix-blend-mode: var(--grain-blend);
+  }
+
+  /* painting label in the corner: the time of day, tap to change */
+  .time {
+    all: unset;
+    position: fixed;
+    top: calc(12px + 12px);
+    right: calc(12px + 16px);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: .95rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 3px;
+    z-index: 2;
+  }
+  .time:hover, .time:focus-visible { color: var(--ink); }
+  .time:focus-visible { outline: 1px dashed var(--ink-soft); }
+
+  h1 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(2.1rem, 7.5vw, 3rem);
+    line-height: 1;
+    margin: 0;
+    text-align: center;
+    text-wrap: balance;
+    letter-spacing: .02em;
+  }
+
+  .hint {
+    color: var(--ink-soft);
+    margin: 0;
+    min-height: 1.4em;
+    text-align: center;
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  /* ---------- stage: stitched arch + jar ---------- */
+  .stage {
+    --cell: 9px;
+    position: relative;
+    width: min(380px, 100%, calc((100vh - 220px) / 1.16));
+    min-width: 220px;
+    max-width: 100%;
+    padding-top: calc(var(--cell) * 19);
+    padding-bottom: calc(var(--cell) * 3);
+  }
+  .arch {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .jar {
+    all: unset;
+    position: relative;
+    display: block;
+    width: 72%;
+    margin-inline: auto;
+    aspect-ratio: 300 / 380;
+    cursor: pointer;
+    transform-origin: 50% 95%;
+    z-index: 1;
+  }
+  .jar:focus-visible { outline: 1px dashed var(--ink-soft); outline-offset: 10px; border-radius: 24px; }
+  .jar[aria-disabled="true"] { cursor: default; }
+  .jar svg { width: 100%; height: 100%; overflow: visible; }
+  /* the lid hinges at its left edge when it lifts */
+  #lid { transform-box: view-box; transform-origin: 80px 80px; }
+
+  .count {
+    position: relative;
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 14px 0 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- the star that drifts out ---------- */
+  .popped {
+    all: unset;
+    position: absolute;
+    left: 50%;
+    top: calc(var(--cell) * 7);
+    width: 96px;
+    height: 96px;
+    margin-left: -48px;
+    cursor: pointer;
+    display: none;
+    z-index: 5;
+  }
+  .popped.show { display: block; }
+  .popped:focus-visible { outline: 1px dashed var(--ink-soft); outline-offset: 8px; border-radius: 50%; }
+  .popped .bob { width: 100%; height: 100%; }
+  .popped.landed .bob { animation: float 4s ease-in-out infinite; }
+  .popped svg, .fold-star svg {
+    width: 100%; height: 100%; overflow: visible;
+    filter: drop-shadow(0 0 16px rgba(255, 252, 244, .95)) drop-shadow(0 0 34px rgba(255, 250, 236, .8));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-7px) rotate(4deg); }
+  }
+
+  .fold-star {
+    position: fixed;
+    width: 96px;
+    height: 96px;
+    pointer-events: none;
+    z-index: 11;
+  }
+
+  /* stars that wander across the screen and can be caught */
+  .wander {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 54px;
+    height: 54px;
+    z-index: 6;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    will-change: transform;
+  }
+  .wander svg {
+    width: 100%; height: 100%; overflow: visible;
+    filter: drop-shadow(0 0 8px var(--twinkle-glow)) drop-shadow(0 0 18px var(--twinkle-glow));
+    transition: transform .25s;
+  }
+  .wander:hover svg { transform: scale(1.08); }
+  .wander.held { cursor: grabbing; }
+  .wander.held svg { transform: scale(1.18); }
+  .wander:focus-visible { outline: 1px dashed var(--ink-soft); outline-offset: 4px; border-radius: 50%; }
+  .trail {
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--twinkle);
+    box-shadow: 0 0 6px var(--twinkle-glow);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .jar svg { transition: filter .3s; }
+  .jar.receiving svg { filter: drop-shadow(0 0 14px var(--twinkle-glow)) drop-shadow(0 0 30px var(--twinkle-glow)); }
+
+  .spark {
+    position: absolute;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 4;
+    filter: blur(1px);
+  }
+
+  /* ---------- the unfolded message ---------- */
+  .note-wrap {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: color-mix(in srgb, var(--frame) 55%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .6s;
+    z-index: 10;
+  }
+  .note-wrap.open { opacity: 1; pointer-events: auto; }
+
+  /* the note is always pale paper, whatever the time of day */
+  .note {
+    position: relative;
+    width: min(540px, 100%);
+    padding: 30px 32px 20px;
+    background-color: #fbf8f2;
+    background-image:
+      var(--grain),
+      radial-gradient(ellipse 70% 90% at 35% 45%, color-mix(in srgb, var(--note-color, #f5eecd) 70%, transparent), transparent 75%),
+      radial-gradient(ellipse 50% 70% at 80% 60%, color-mix(in srgb, var(--note-color, #f5eecd) 45%, transparent), transparent 70%);
+    background-size: 200px, auto, auto;
+    color: #5f566b;
+    border: 1px solid rgba(111, 102, 123, .18);
+    border-radius: 2px;
+    box-shadow: 0 18px 40px rgba(40, 34, 52, .14), 0 0 60px color-mix(in srgb, var(--note-color, #f5eecd) 35%, transparent);
+    transform: scaleX(.04) scaleY(.4) rotate(-3deg);
+    transition: transform .8s cubic-bezier(.2, 1.1, .35, 1);
+  }
+  .note-wrap.open .note { transform: scaleX(1) scaleY(1) rotate(-1deg); }
+
+  .note-body { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+  .note .label {
+    margin: 0;
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: #a88a45;
+  }
+
+  .note p.text {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.55rem, 5.2vw, 2rem);
+    line-height: 1.25;
+    margin: 0;
+    text-align: center;
+    text-wrap: balance;
+    min-height: 1.25em;
+  }
+
+  .note .close {
+    all: unset;
+    display: block;
+    font-size: .75rem;
+    font-weight: 500;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: #6f667b;
+    opacity: .6;
+    cursor: pointer;
+    padding: 6px 12px;
+  }
+  .note .close:hover, .note .close:focus-visible { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="dream" aria-hidden="true">
+    <i class="wash w1"></i><i class="wash w2"></i><i class="wash w3"></i>
+    <i class="wash w4"></i><i class="wash w5"></i><i class="wash w6"></i>
+    <svg class="nightsky" id="nightsky" preserveAspectRatio="none" viewBox="0 0 1000 1000"></svg>
+    <svg class="dabs" id="dabs" preserveAspectRatio="none" viewBox="0 0 1000 1000"></svg>
+    <div class="twinkles" id="page-twinkles"></div>
+  </div>
+
+  <button class="time" id="time" aria-label="Time of day. Tap to change."></button>
+
+  <h1>Jar of Lucky Stars</h1>
+  <p class="hint" id="hint" aria-live="polite">Tap the jar to pick a lucky star</p>
+
+  <div class="stage" id="stage">
+    <canvas class="arch" id="arch" aria-hidden="true"></canvas>
+    <div class="twinkles" id="stage-twinkles" aria-hidden="true"></div>
+
+    <button class="popped" id="popped" aria-label="Open the lucky star">
+      <div class="bob"><svg viewBox="-50 -50 100 100" id="popped-svg"></svg></div>
+    </button>
+
+    <button class="jar" id="jar" aria-label="Jar of lucky stars. Tap to take one out.">
+      <svg viewBox="0 0 300 380" aria-hidden="true">
+        <defs>
+          <!-- a slight wobble so edges look drawn by hand -->
+          <filter id="hand" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3"/>
+            <feDisplacementMap in="SourceGraphic" scale="3.5"/>
+          </filter>
+          <filter id="nightglow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="3.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="goldglow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+            <feColorMatrix in="b" values="1 0 0 0 .15  0 1 0 0 .1  0 0 1 0 0  0 0 0 .8 0" result="g"/>
+            <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <!-- paper finishes for the stars -->
+          <pattern id="stripes" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+            <rect width="1.8" height="5" fill="#fff" fill-opacity=".6"/>
+          </pattern>
+          <pattern id="speckle" width="6" height="6" patternUnits="userSpaceOnUse">
+            <circle cx="1.2" cy="1.4" r=".7" fill="#6f667b" fill-opacity=".35"/>
+            <circle cx="4.2" cy="4" r=".55" fill="#fff" fill-opacity=".8"/>
+          </pattern>
+          <linearGradient id="pearl" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity=".85"/>
+            <stop offset=".35" stop-color="#f3dcef" stop-opacity=".55"/>
+            <stop offset=".6" stop-color="#d3ecf1" stop-opacity=".6"/>
+            <stop offset=".85" stop-color="#efe8c8" stop-opacity=".5"/>
+            <stop offset="1" stop-color="#fff" stop-opacity=".8"/>
+          </linearGradient>
+          <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fff5d2"/>
+            <stop offset=".4" stop-color="#e8c56c"/>
+            <stop offset=".65" stop-color="#f7e4a6"/>
+            <stop offset="1" stop-color="#d4ab52"/>
+          </linearGradient>
+          <radialGradient id="glint-fill">
+            <stop offset="0" stop-color="#fff" stop-opacity=".9"/>
+            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <clipPath id="jar-inside">
+            <path d="M84 96 Q48 104 44 150 L44 330 Q44 364 80 366 L220 366 Q256 364 256 330 L256 150 Q252 104 216 96 Z"/>
+            <!-- the neck and the open mouth above it, so a star can fall in -->
+            <rect x="87" y="0" width="126" height="100"/>
+          </clipPath>
+        </defs>
+
+        <!-- glass -->
+        <path d="M84 96 Q48 104 44 150 L44 330 Q44 364 80 366 L220 366 Q256 364 256 330 L256 150 Q252 104 216 96 Z"
+              style="fill: var(--glass)"/>
+
+        <!-- stars inside -->
+        <g clip-path="url(#jar-inside)">
+          <g id="stars-glow"><g id="jar-stars" filter="url(#hand)"></g></g>
+          <ellipse id="glint" cx="150" cy="230" rx="34" ry="120" fill="url(#glint-fill)" style="opacity: var(--glint)"/>
+        </g>
+
+        <g filter="url(#hand)" fill="none" class="pencil" stroke-linecap="round">
+          <!-- outline, drawn twice for a sketched feel -->
+          <path d="M84 96 Q48 104 44 150 L44 330 Q44 364 80 366 L220 366 Q256 364 256 330 L256 150 Q252 104 216 96 Z" stroke-width="1.4"/>
+          <path d="M86 98 Q50 106 46 152 L45 328 Q46 362 82 364 L218 365 Q255 362 255 328 L254 152 Q250 105 214 97" stroke-width=".8" opacity=".5"/>
+          <!-- reflections -->
+          <path d="M64 170 Q62 245 66 318" stroke="#fff" stroke-width="4" style="stroke-opacity: var(--glint)"/>
+          <path d="M77 142 Q74 150 74 158" stroke="#fff" stroke-width="3" style="stroke-opacity: var(--glint)"/>
+          <!-- neck -->
+          <path d="M86 98 L86 80 M214 98 L214 80" stroke-width="1.2"/>
+          <!-- lid, with its thin ribbon -->
+          <g id="lid">
+            <rect x="78" y="48" width="144" height="32" rx="8" style="fill: var(--lid)" stroke-width="1.3"/>
+            <path d="M80 70 H220" stroke-width=".8" opacity=".6"/>
+            <path d="M94 55 H116" stroke="#fff" stroke-width="3" style="stroke-opacity: var(--glint)"/>
+            <path d="M150 64 Q132 48 126 58 Q124 70 150 64 Q168 48 174 58 Q176 70 150 64" stroke="#d9a3b1" stroke-width="1.2" fill="rgba(242,220,226,.5)"/>
+            <path d="M149 65 Q144 80 138 96 M151 65 Q157 82 163 94" stroke="#d9a3b1" stroke-width="1.1"/>
+          </g>
+        </g>
+      </svg>
+    </button>
+
+    <p class="count" id="count"></p>
+  </div>
+
+  <div class="note-wrap" id="note-wrap" role="dialog" aria-modal="true" aria-labelledby="note-text">
+    <div class="note" id="note">
+      <div class="note-body" id="note-body">
+        <p class="label" id="note-label" hidden>A rare golden star</p>
+        <p class="text" id="note-text" aria-live="polite"></p>
+        <button class="close" id="close">Fold it back</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const MESSAGES = [
+    "You are someone's favourite person.",
+    "Today is going to be a good day. I can feel it.",
+    "You're braver than you think.",
+    "Drink some water and give yourself a hug.",
+    "Something lovely is on its way to you.",
+    "Your laugh makes the room brighter.",
+    "It's okay to rest. The stars do too.",
+    "You've gotten through every hard day so far.",
+    "Someone is smiling right now because of you.",
+    "You deserve all the good things.",
+    "Keep going — you're doing better than you know.",
+    "The world is softer with you in it.",
+    "Little steps still move you forward.",
+    "You are made of stardust and good intentions.",
+    "Be proud of how far you've come.",
+    "Your kindness is never wasted.",
+    "Make a wish — this one's lucky.",
+    "You're allowed to take up space.",
+    "The best is still coming.",
+    "Sending you a warm cup of cocoa, in spirit.",
+    "You shine even on cloudy days.",
+    "It's a great day to do something that makes you happy.",
+    "You are loved more than you realise.",
+    "Go outside and look up tonight.",
+    "Breathe in. Breathe out. You've got this.",
+    "Your ideas matter.",
+    "Today, be as gentle with yourself as you are with others.",
+    "Good luck is following you around.",
+    "You make ordinary moments special."
+  ];
+
+  // one golden star per jar carries one of these
+  const GOLDEN_MESSAGES = [
+    "You found the golden star. Something wonderful is about to happen.",
+    "A golden star only turns up for someone who lights up other people's days.",
+    "Make your biggest wish. This one is listening."
+  ];
+
+  // for the stars that drift in from outside
+  const WANDERING_MESSAGES = [
+    "This one drifted all the way here just for you.",
+    "Some luck finds you when you're not even looking.",
+    "You caught a wandering star. Keep it close.",
+    "Good things are floating your way.",
+    "Small wonders are everywhere today.",
+    "You're exactly where you need to be.",
+    "A wish that travelled a long way to reach you.",
+    "Reach out. Good things are easier to catch than you think.",
+    "Someone out there is thinking of you right now.",
+    "The sky saved this one for you."
+  ];
+
+  // washed-out paper colours
+  const COLORS = ["#efc9d2", "#f1e2a9", "#cae4d8", "#cadcec", "#ddd3ec", "#f1d4c1", "#e9c2cc", "#dbe6c6"];
+
+  const $ = id => document.getElementById(id);
+  const root = document.documentElement;
+  const jar = $("jar"), lid = $("lid"), jarStars = $("jar-stars"), starsGlow = $("stars-glow"), glint = $("glint");
+  const stage = $("stage"), arch = $("arch");
+  const popped = $("popped"), poppedSvg = $("popped-svg");
+  const noteWrap = $("note-wrap"), note = $("note"), noteBody = $("note-body");
+  const noteText = $("note-text"), noteLabel = $("note-label");
+  const hint = $("hint"), count = $("count"), closeBtn = $("close"), timeBtn = $("time");
+
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const el = (name, attrs) => {
+    const n = document.createElementNS(SVGNS, name);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  // small seeded random so the drawings stay the same between redraws
+  function rng(seed) {
+    return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+  }
+
+  // ---- paint dabs and night stars onto the paper ----
+  (function paintPaper() {
+    const r = rng(7);
+    const dabs = $("dabs");
+    const dabColors = ["#b9b3db", "#c9d9ec", "#e9b8c4", "#cfe3d6", "#efe2a8"];
+    for (let i = 0; i < 70; i++) {
+      // clustered loosely across the lower middle, like brush dabs
+      const x = 120 + r() * 760, y = 520 + (r() - .5) * 360;
+      dabs.appendChild(el("ellipse", {
+        cx: x.toFixed(0), cy: y.toFixed(0),
+        rx: (3 + r() * 6).toFixed(1), ry: (1.5 + r() * 2.5).toFixed(1),
+        fill: dabColors[i % dabColors.length], opacity: (.25 + r() * .3).toFixed(2),
+        transform: `rotate(${(r() * 30 - 15).toFixed(0)} ${x.toFixed(0)} ${y.toFixed(0)})`
+      }));
+    }
+
+    const sky = $("nightsky");
+    for (let i = 0; i < 90; i++) {
+      const c = el("circle", {
+        cx: (r() * 1000).toFixed(0), cy: (r() * 700).toFixed(0),
+        r: (r() < .15 ? 1.6 : .9).toFixed(1), fill: i % 7 ? "#f4f0ff" : "#f6e7b6"
+      });
+      c.style.animationDelay = (-r() * 4).toFixed(2) + "s";
+      c.style.animationDuration = (3 + r() * 4).toFixed(2) + "s";
+      sky.appendChild(c);
+    }
+  })();
+
+  // ---- twinkles: each one appears, turns a little and fades, then moves somewhere new ----
+  const SPARKLE = "M0 -10 C1 -2.5 2.5 -1 10 0 C2.5 1 1 2.5 0 10 C-1 2.5 -2.5 1 -10 0 C-2.5 -1 -1 -2.5 0 -10Z";
+
+  function twinkles(layer, n, place) {
+    if (reduceMotion) return;
+    for (let i = 0; i < n; i++) {
+      const t = el("svg", { viewBox: "-12 -12 24 24", class: "twinkle" });
+      t.appendChild(el("path", { d: SPARKLE }));
+      layer.appendChild(t);
+      const run = first => {
+        const [x, y] = place();
+        const size = 9 + Math.random() * 12;
+        t.style.left = x - size / 2 + "px";
+        t.style.top = y - size / 2 + "px";
+        t.style.width = t.style.height = size + "px";
+        const rot = Math.random() * 45;
+        t.animate([
+          { opacity: 0, transform: `scale(.15) rotate(${rot}deg)` },
+          { opacity: .95, transform: `scale(1) rotate(${rot + 30}deg)`, offset: .45 },
+          { opacity: 0, transform: `scale(.15) rotate(${rot + 70}deg)` }
+        ], {
+          duration: 1600 + Math.random() * 2000,
+          delay: (first ? 0 : 200) + Math.random() * 1600,
+          easing: "ease-in-out",
+          fill: "both"
+        }).onfinish = () => run(false);
+      };
+      run(true);
+    }
+  }
+
+  // a loose ring around the arch and jar
+  const stageLayer = $("stage-twinkles");
+  twinkles(stageLayer, 18, () => {
+    const w = stageLayer.clientWidth, h = stageLayer.clientHeight;
+    const a = Math.random() * Math.PI * 2;
+    const k = .38 + Math.random() * .2;
+    return [w / 2 + Math.cos(a) * w * k, h * .5 + Math.sin(a) * h * k * .95];
+  });
+  // and a few drifting across the painting
+  const pageLayer = $("page-twinkles");
+  twinkles(pageLayer, 14, () => [Math.random() * pageLayer.clientWidth, Math.random() * pageLayer.clientHeight * .85]);
+
+  // ---- faint cross-stitch arch around the jar ----
+  const COLS = 41;
+  function drawArch() {
+    const w = stage.clientWidth;
+    const cell = w / COLS;
+    if (stage.style.getPropertyValue("--cell") !== cell + "px") stage.style.setProperty("--cell", cell + "px");
+    const h = stage.clientHeight;
+    const rows = Math.floor(h / cell);
+    const dpr = window.devicePixelRatio || 1;
+    arch.width = Math.round(w * dpr);
+    arch.height = Math.round(h * dpr);
+    const ctx = arch.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const css = getComputedStyle(root);
+    const THREAD = css.getPropertyValue("--thread").trim();
+    const ROSE = css.getPropertyValue("--thread-rose").trim();
+    const GOLD = css.getPropertyValue("--thread-gold").trim();
+    const SKY = css.getPropertyValue("--thread-sky").trim();
+
+    const cells = new Map();
+    const put = (x, y, c) => {
+      x = Math.round(x); y = Math.round(y);
+      if (x < 0 || y < 0 || x >= COLS || y >= rows) return;
+      cells.set(x + "," + y, c);
+      cells.set((COLS - 1 - x) + "," + y, c); // mirror
+    };
+    const spiral = (x0, y0, r, turns, start, dir, c) => {
+      for (let t = .3; t <= 1; t += .004) {
+        const a = start + dir * t * turns * Math.PI * 2;
+        put(x0 + r * t * Math.cos(a), y0 + r * t * Math.sin(a), c);
+      }
+    };
+    const flower = (x, y) => {
+      put(x, y - 1, ROSE); put(x - 1, y, ROSE); put(x + 1, y, ROSE); put(x, y + 1, ROSE);
+      put(x, y, GOLD);
+    };
+
+    const cx = 20, R = 17, cy = R + 4;
+    for (let a = 0; a <= Math.PI / 2; a += .004) put(cx - R * Math.cos(a), cy - R * Math.sin(a), THREAD);
+    for (let y = cy; y <= rows - 3; y++) put(cx - R, y, THREAD);
+    spiral(4, 5, 3.6, 1.15, Math.PI * .25, -1, THREAD);
+    for (let x = 9; x <= 16; x++) put(x, 1, THREAD);
+    put(17, 2, THREAD); put(17, 3, THREAD); put(16, 3, THREAD);
+    spiral(cx - R + 3.4, rows - 5, 2.4, 1.1, Math.PI, 1, THREAD);
+    for (let y = cy + 3; y < rows - 6; y += 5) { put(cx - R - 1, y, THREAD); put(cx - R - 2, y - 1, THREAD); }
+    flower(cx, 1);
+    flower(10, 4);
+    flower(1, cy);
+    [[8, 12, GOLD], [33, 10, SKY], [6, 17, SKY], [35, 16, GOLD], [11, 8, ROSE]].forEach(([x, y, c]) => {
+      cells.set(x + "," + y, c);
+    });
+
+    // each cell is a small, slightly uneven cross-stitch
+    const r = rng(11);
+    const p = cell * .24;
+    ctx.lineCap = "round";
+    ctx.lineWidth = Math.max(.9, cell * .13);
+    for (const [key, color] of cells) {
+      const [x, y] = key.split(",").map(Number);
+      const j = () => (r() - .5) * cell * .12;
+      const x0 = x * cell, y0 = y * cell;
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x0 + p + j(), y0 + p + j()); ctx.lineTo(x0 + cell - p + j(), y0 + cell - p + j());
+      ctx.moveTo(x0 + cell - p + j(), y0 + p + j()); ctx.lineTo(x0 + p + j(), y0 + cell - p + j());
+      ctx.stroke();
+    }
+  }
+
+  let archFrame;
+  new ResizeObserver(() => {
+    cancelAnimationFrame(archFrame);
+    archFrame = requestAnimationFrame(drawArch);
+  }).observe(stage);
+  if (document.fonts) document.fonts.ready.then(drawArch);
+
+  // ---- time of day ----
+  const TIMES = ["morning", "afternoon", "dusk", "night"];
+  let timeChosen = false;
+  function timeNow() {
+    const h = new Date().getHours();
+    return h >= 5 && h < 11 ? "morning" : h < 17 ? "afternoon" : h < 20 ? "dusk" : "night";
+  }
+  function setTime(t) {
+    root.dataset.time = t;
+    timeBtn.textContent = t;
+    timeBtn.setAttribute("aria-label", `Time of day: ${t}. Tap to change.`);
+    if (t === "night") starsGlow.setAttribute("filter", "url(#nightglow)");
+    else starsGlow.removeAttribute("filter");
+    requestAnimationFrame(drawArch);
+  }
+  timeBtn.addEventListener("click", () => {
+    timeChosen = true;
+    setTime(TIMES[(TIMES.indexOf(root.dataset.time) + 1) % TIMES.length]);
+  });
+  setInterval(() => { if (!timeChosen && root.dataset.time !== timeNow()) setTime(timeNow()); }, 60000);
+
+  // ---- a folded paper star: soft wash, a graphite edge, and its paper finish ----
+  function starPoints(r) {
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const rad = i % 2 ? r * 0.52 : r;
+      const a = -Math.PI / 2 + i * Math.PI / 5;
+      pts.push((Math.cos(a) * rad).toFixed(2) + "," + (Math.sin(a) * rad).toFixed(2));
+    }
+    return pts.join(" ");
+  }
+
+  function makeStar(r, color, kind, line = 1) {
+    const g = el("g", {});
+    const pts = starPoints(r);
+    const puff = r * 0.42;
+    const edge = el("polygon", { points: pts, fill: "none", "stroke-width": puff + line * 1.6, "stroke-linejoin": "round", class: "pencil" });
+    const body = el("polygon", { points: pts, fill: color, stroke: color, "stroke-width": puff, "stroke-linejoin": "round" });
+    g.append(edge, body);
+    const finish = { striped: "url(#stripes)", speckled: "url(#speckle)", pearly: "url(#pearl)", golden: "url(#gold)" }[kind];
+    if (finish) {
+      g.appendChild(el("polygon", {
+        points: pts, fill: finish, "stroke-linejoin": "round",
+        stroke: kind === "striped" ? "none" : finish, "stroke-width": puff
+      }));
+    }
+    if (kind === "golden") g.setAttribute("filter", "url(#goldglow)");
+    // the folded ridges of a paper star
+    for (let i = 0; i < 5; i++) {
+      const a = -Math.PI / 2 + i * Math.PI * 2 / 5;
+      g.appendChild(el("line", {
+        x1: 0, y1: 0, x2: (Math.cos(a) * r * .8).toFixed(2), y2: (Math.sin(a) * r * .8).toFixed(2),
+        stroke: "#fff", "stroke-opacity": ".55", "stroke-width": line * .9, "stroke-linecap": "round"
+      }));
+    }
+    return g;
+  }
+
+  // the big version of a jar star, drawn inside a -50..50 viewBox
+  const bigStar = s => makeStar(30 * s.r / 13, s.color, s.kind, 1);
+
+  // ---- fill the jar ----
+  let stars = [];      // every star in the jar, read or not
+  let current = null;  // the star that is out of the jar
+  let state = "idle";  // idle | busy | popped | reading | folding
+
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function fillJar() {
+    jarStars.innerHTML = "";
+    stars = [];
+    const msgs = shuffle(MESSAGES.slice());
+    const total = msgs.length + 1;
+    const kinds = shuffle([
+      "golden",
+      ...Array(4).fill("pearly"), ...Array(5).fill("striped"), ...Array(4).fill("speckled"),
+      ...Array(total - 14).fill("plain")
+    ]);
+    for (let i = 0; i < total; i++) addJarStar(newStar(kinds[i], kinds[i] === "golden" ? null : msgs.pop()));
+    updateCount();
+  }
+
+  const randomOf = list => list[Math.floor(Math.random() * list.length)];
+
+  // a star's paper, size and message (golden stars bring their own message)
+  function newStar(kind, msg) {
+    return {
+      kind,
+      r: kind === "golden" ? 13.5 : 10.5 + Math.random() * 4,
+      color: kind === "golden" ? "#ecd28a" : kind === "pearly" ? "#f1ecf2" : randomOf(COLORS),
+      msg: kind === "golden" ? randomOf(GOLDEN_MESSAGES) : msg
+    };
+  }
+
+  // place a star on top of the pile; the pile builds from the bottom up, row by row
+  function addJarStar(def) {
+    const i = stars.length, perRow = 6, left = 58, right = 242, bottom = 350;
+    const row = Math.floor(i / perRow), col = i % perRow;
+    const offset = row % 2 ? 15 : 0;
+    const s = Object.assign({
+      x: left + offset + col * ((right - left - 15) / (perRow - 1)) + (Math.random() - .5) * 10,
+      y: bottom - row * 27 + (Math.random() - .5) * 8,
+      phase: Math.random() * Math.PI * 2,
+      read: false,
+      drop: null
+    }, def);
+    s.rot0 = Math.random() * 72;
+    s.node = el("g", { transform: `translate(${s.x.toFixed(1)} ${s.y.toFixed(1)}) rotate(${s.rot0.toFixed(1)})` });
+    s.node.style.transition = "opacity 1.6s ease";
+    s.node.appendChild(makeStar(s.r, s.color, s.kind, .6));
+    jarStars.appendChild(s.node);
+    stars.push(s);
+    return s;
+  }
+
+  function updateCount() {
+    const n = stars.filter(s => !s.read).length;
+    count.textContent = n ? `${n} of ${stars.length} folded` : "All unfolded";
+  }
+
+  function setHint(text) { hint.textContent = text; }
+
+  // ---- the jar leans toward you, and the stars inside shift and settle ----
+  const m = { tilt: 0, vel: 0, target: 0, slosh: 0, sloshV: 0, energy: 0, glint: 0, glintT: 0, last: 0, running: false };
+
+  function wake() {
+    if (reduceMotion || m.running) return;
+    m.running = true;
+    m.last = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  function kick(strength) {
+    m.vel += strength * 70 * (Math.random() < .5 ? -1 : 1);
+    m.energy = Math.min(1.2, m.energy + strength);
+    wake();
+  }
+
+  function tick(now) {
+    const dt = Math.min(.033, (now - m.last) / 1000);
+    m.last = now;
+    m.vel += (-70 * (m.tilt - m.target) - 8 * m.vel) * dt;
+    m.tilt += m.vel * dt;
+    m.sloshV += (-22 * (m.slosh - m.tilt) - 4.5 * m.sloshV) * dt;
+    m.slosh += m.sloshV * dt;
+    m.energy *= Math.exp(-2.6 * dt);
+    m.glint += (m.glintT - m.glint) * Math.min(1, dt * 4);
+
+    jar.style.transform = `rotate(${m.tilt.toFixed(2)}deg)`;
+    // the pile lags behind the glass and tries to stay level
+    const lean = (m.slosh - m.tilt) * 1.4 - m.tilt * .35;
+    jarStars.setAttribute("transform", `translate(${(-m.tilt * 1.2).toFixed(2)} 0) rotate(${lean.toFixed(2)} 150 350)`);
+    glint.setAttribute("cx", (150 + m.glint * 70).toFixed(1));
+
+    let dropping = false;
+    for (const s of stars) {
+      let x = 0, y = 0, rot = 0;
+      if (s.drop) {
+        // falls through the neck with gravity, swaying and turning a little like paper,
+        // then settles with a soft rebound
+        const d = s.drop;
+        const p = Math.min(1, (now - d.t0) / d.dur);
+        const q = Math.min(1, p / .72);
+        // straight down through the neck first, drifting over to its spot lower down
+        x = d.dx * (1 - q * q * q) + d.sway * Math.sin(q * Math.PI * 2) * 6 * (1 - q);
+        y = d.dy * (1 - q * q);
+        rot = d.spin * (1 - q);
+        if (q >= 1) {
+          if (!d.landed) { d.landed = true; kick(.22); }
+          const k = (p - .72) / .28;
+          y -= Math.sin(k * Math.PI) * 3.5 * (1 - k * .5);
+          rot += Math.sin(k * Math.PI * 2) * 6 * (1 - k);
+        }
+        if (p >= 1) { s.drop = null; d.done(); } else dropping = true;
+      }
+      if (m.energy > .01) {
+        x += Math.sin(now * .018 + s.phase) * m.energy * 1.6;
+        y += Math.cos(now * .021 + s.phase) * m.energy * 1.2;
+        rot += Math.sin(now * .015 + s.phase) * m.energy * 10;
+      }
+      s.node.setAttribute("transform", `translate(${(s.x + x).toFixed(2)} ${(s.y + y).toFixed(2)}) rotate(${(s.rot0 + rot).toFixed(1)})`);
+    }
+
+    const settled = !dropping && m.energy < .01 &&
+      Math.abs(m.vel) < .01 && Math.abs(m.tilt - m.target) < .01 &&
+      Math.abs(m.sloshV) < .01 && Math.abs(m.slosh - m.tilt) < .01 &&
+      Math.abs(m.glint - m.glintT) < .002;
+    if (settled) { m.running = false; return; }
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener("pointermove", e => {
+    const rect = jar.getBoundingClientRect();
+    const nx = clamp((e.clientX - (rect.left + rect.width / 2)) / (innerWidth / 2), -1, 1);
+    m.target = nx * 4;
+    m.glintT = nx;
+    wake();
+  });
+  document.addEventListener("pointerout", e => {
+    if (!e.relatedTarget) { m.target = 0; m.glintT = 0; wake(); }
+  });
+  // phone tilt, where the browser allows it
+  window.addEventListener("deviceorientation", e => {
+    if (e.gamma == null) return;
+    const nx = clamp(e.gamma / 30, -1, 1);
+    m.target = nx * 5;
+    m.glintT = nx;
+    wake();
+  });
+
+  // ---- the lid lifts to let a star in or out ----
+  function openLid() {
+    if (reduceMotion) return;
+    lid.animate([{ transform: "translate(-4px, -30px) rotate(-18deg)" }],
+      { duration: 480, easing: "cubic-bezier(.3, 1.35, .5, 1)", fill: "forwards" });
+  }
+  function closeLid() {
+    if (reduceMotion) return;
+    lid.animate([{ transform: "translate(0, 0) rotate(0deg)" }],
+      { duration: 520, easing: "cubic-bezier(.5, 0, .45, 1.25)", fill: "forwards" });
+  }
+
+  // ---- a star floats back into the jar ----
+  // ENTRY is where it enters, just above the neck, in the jar drawing's units
+  const ENTRY = { x: 150, y: 58 }, DROP_SPIN = 40;
+  const easeInOutSine = p => -(Math.cos(Math.PI * p) - 1) / 2;
+
+  // where a point of the jar drawing is on screen right now, and how the drawing is scaled and turned
+  function jarFrame() {
+    const ctm = jarStars.getScreenCTM();
+    const pt = new DOMPoint(ENTRY.x, ENTRY.y).matrixTransform(ctm);
+    return { x: pt.x, y: pt.y, scale: Math.hypot(ctm.a, ctm.b), rot: Math.atan2(ctm.b, ctm.a) * 180 / Math.PI };
+  }
+
+  // fly a floating star element (fixed, `size` px square, star drawn at 30 * r / 13 in a 100-unit box)
+  // along a soft curve to the jar's mouth, shrinking to exactly the size and angle it will have inside
+  function flyIntoJar(node, size, from, s) {
+    const svg = node.querySelector("svg");
+    if (svg) svg.style.filter = "none";
+    node.style.left = node.style.top = "0px";
+    return new Promise(resolve => {
+      const t0 = performance.now(), dur = reduceMotion ? 1 : 1500;
+      const start = jarFrame();
+      // end on the same angle the star will have in the jar (a star looks the same every 72°)
+      const base = from.rot + 150;
+      const endRot = base + ((((s.rot0 + DROP_SPIN + start.rot) - base) % 72) + 72) % 72;
+      const side = from.x < start.x ? -1 : 1;
+      let lidOpen = false;
+      function step(now) {
+        const p = Math.min(1, (now - t0) / dur);
+        const e = easeInOutSine(p);
+        const to = jarFrame();
+        // a quadratic curve that rises above the jar, then comes down into the mouth
+        const c = { x: (from.x + to.x) / 2 + side * 30, y: Math.min(from.y, to.y) - 120 };
+        const u = 1 - e;
+        const x = u * u * from.x + 2 * u * e * c.x + e * e * to.x + Math.sin(p * Math.PI * 2) * 9 * (1 - p);
+        const y = u * u * from.y + 2 * u * e * c.y + e * e * to.y;
+        const scale = 1 + (to.scale * 13 * 100 / (30 * size) - 1) * e;
+        const rot = from.rot + (endRot - from.rot) * e;
+        const glow = 1 - e;
+        node.style.filter = `drop-shadow(0 0 ${(16 * glow).toFixed(1)}px rgba(255, 250, 238, ${(.9 * glow).toFixed(2)}))`;
+        node.style.transform = `translate(${(x - size / 2).toFixed(1)}px, ${(y - size / 2).toFixed(1)}px) rotate(${rot.toFixed(1)}deg) scale(${scale.toFixed(3)})`;
+        if (!lidOpen && p > .5) { lidOpen = true; openLid(); }
+        if (p < 1) requestAnimationFrame(step);
+        else resolve();
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  // the star inside the jar takes over at the mouth and falls to its place in the pile
+  function dropIntoJar(s, done = () => {}) {
+    s.node.style.visibility = "";
+    if (reduceMotion) return done();
+    jarStars.appendChild(s.node); // in front of the others while it falls
+    s.drop = {
+      t0: performance.now(), dur: 1250,
+      dx: ENTRY.x - s.x, dy: ENTRY.y - s.y,
+      spin: DROP_SPIN, sway: Math.random() < .5 ? -1 : 1,
+      done: () => {
+        const next = stars[stars.indexOf(s) + 1];
+        if (next && next.node.parentNode === jarStars) jarStars.insertBefore(s.node, next.node);
+        done();
+      }
+    };
+    wake();
+    setTimeout(closeLid, 420);
+  }
+
+  // ---- a soft shimmer when the star settles ----
+  function shimmer(x, y, color) {
+    if (reduceMotion) return;
+    const tints = [color, "#fffdf6", "#efe2a8"];
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("span");
+      s.className = "spark";
+      s.style.left = x - 2.5 + "px";
+      s.style.top = y - 2.5 + "px";
+      s.style.background = tints[i % tints.length];
+      stage.appendChild(s);
+      const a = (i / 10) * Math.PI * 2, d = 30 + Math.random() * 30;
+      s.animate([
+        { transform: "translate(0,0) scale(1)", opacity: .9 },
+        { transform: `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d - 10}px) scale(.2)`, opacity: 0 }
+      ], { duration: 1400, easing: "cubic-bezier(.2,.7,.3,1)" }).onfinish = () => s.remove();
+    }
+  }
+
+  // ---- wandering stars: catch one and it goes into the jar ----
+  const WANDER = 54, JAR_MAX = 48;
+  let wanderers = 0, caughtOne = false;
+  let wanderMsgs = [];
+  const nextWanderMsg = () => (wanderMsgs.length ? wanderMsgs : (wanderMsgs = shuffle(WANDERING_MESSAGES.slice()))).pop();
+
+  function idleHint() {
+    return stars.some(x => !x.read) ? "Tap the jar to pick a lucky star" : "Every star has been read. Tap the jar to fold them again";
+  }
+
+  function overJar(px, py) {
+    const r = jar.getBoundingClientRect(), pad = 24;
+    return px > r.left - pad && px < r.right + pad && py > r.top - pad && py < r.bottom + pad;
+  }
+
+  function spawnWanderer() {
+    if (wanderers >= 2 || stars.length >= JAR_MAX || !(state === "idle" || state === "popped")) return;
+    wanderers++;
+    const roll = Math.random();
+    const kind = roll < .06 ? "golden" : roll < .24 ? "pearly" : roll < .42 ? "striped" : roll < .56 ? "speckled" : "plain";
+    const def = newStar(kind, nextWanderMsg());
+
+    const w = document.createElement("div");
+    w.className = "wander";
+    w.tabIndex = 0;
+    w.setAttribute("role", "button");
+    w.setAttribute("aria-label", "A wandering lucky star. Tap it, or drag it onto the jar, to keep it.");
+    const svg = el("svg", { viewBox: "-50 -50 100 100", "aria-hidden": "true" });
+    svg.appendChild(bigStar(def));
+    w.appendChild(svg);
+    document.body.appendChild(w);
+
+    const dir = Math.random() < .5 ? 1 : -1;
+    const speed = (reduceMotion ? 18 : 34 + Math.random() * 20) * dir;
+    const phase = Math.random() * 6;
+    const wave = now => reduceMotion ? 0 : Math.sin(now / 1000 * .9 + phase) * 26;
+    let x = dir > 0 ? -WANDER : innerWidth;
+    let baseY = innerHeight * (.12 + Math.random() * .5);
+    let y = baseY, rot = Math.random() * 72;
+    let last = performance.now(), lastTrail = 0;
+    let held = false, done = false;
+    let grab = { dx: 0, dy: 0, sx: 0, sy: 0, moved: false };
+
+    if (state === "idle") setHint("A star is wandering by. Catch it for the jar");
+
+    const place = () => { w.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rot.toFixed(1)}deg)`; };
+
+    function leave() {
+      done = true;
+      wanderers--;
+      w.remove();
+      if (state === "idle") setHint(idleHint());
+    }
+
+    function frame(now) {
+      if (done) return;
+      const dt = Math.min(.05, (now - last) / 1000);
+      last = now;
+      if (!held) {
+        x += speed * dt;
+        y = baseY + wave(now);
+        if (!reduceMotion) rot += 14 * dt * dir;
+        if ((dir > 0 && x > innerWidth + 10) || (dir < 0 && x < -WANDER - 10)) return leave();
+      }
+      // a faint trail of sparkle behind it
+      if (!reduceMotion && now - lastTrail > 220) {
+        lastTrail = now;
+        const d = document.createElement("span");
+        d.className = "trail";
+        d.style.left = x + WANDER / 2 - 2 + (Math.random() - .5) * 14 + "px";
+        d.style.top = y + WANDER / 2 - 2 + (Math.random() - .5) * 14 + "px";
+        document.body.appendChild(d);
+        d.animate([{ opacity: .9, transform: "scale(1)" }, { opacity: 0, transform: "translateY(8px) scale(.2)" }],
+          { duration: 1300, easing: "ease-out" }).onfinish = () => d.remove();
+      }
+      place();
+      requestAnimationFrame(frame);
+    }
+
+    async function catchIt() {
+      if (done) return;
+      done = true;
+      w.style.pointerEvents = "none";
+      w.classList.remove("held");
+      jar.classList.remove("receiving");
+
+      // it gets its place in the pile now, and appears there once it has flown in
+      const s = addJarStar(def);
+      s.node.style.visibility = "hidden";
+      await flyIntoJar(w, WANDER, { x: x + WANDER / 2, y: y + WANDER / 2, rot }, s);
+      w.remove();
+      wanderers--;
+      dropIntoJar(s);
+      updateCount();
+      if (state === "idle") {
+        setHint(caughtOne ? "Another one for the jar" : "Caught it. It's in the jar now");
+        caughtOne = true;
+      }
+    }
+
+    w.addEventListener("pointerdown", e => {
+      if (done) return;
+      held = true;
+      w.setPointerCapture(e.pointerId);
+      w.classList.add("held");
+      grab = { dx: e.clientX - x, dy: e.clientY - y, sx: e.clientX, sy: e.clientY, moved: false };
+    });
+    w.addEventListener("pointermove", e => {
+      if (!held) return;
+      x = e.clientX - grab.dx;
+      y = e.clientY - grab.dy;
+      if (Math.hypot(e.clientX - grab.sx, e.clientY - grab.sy) > 6) grab.moved = true;
+      jar.classList.toggle("receiving", overJar(e.clientX, e.clientY));
+    });
+    const release = (e, cancelled) => {
+      if (!held) return;
+      held = false;
+      w.classList.remove("held");
+      jar.classList.remove("receiving");
+      // a tap, or letting go over the jar, keeps it; otherwise it wanders on from here
+      if (!cancelled && (!grab.moved || overJar(e.clientX, e.clientY))) catchIt();
+      else baseY = y - wave(performance.now());
+    };
+    w.addEventListener("pointerup", e => release(e, false));
+    w.addEventListener("pointercancel", e => release(e, true));
+    w.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); catchIt(); }
+    });
+
+    place();
+    requestAnimationFrame(frame);
+  }
+
+  (function scheduleWanderer(delay) {
+    setTimeout(() => {
+      spawnWanderer();
+      scheduleWanderer(14000 + Math.random() * 12000);
+    }, delay);
+  })(5000);
+
+  // ---- click the jar: a star comes out ----
+  jar.addEventListener("click", () => {
+    if (state !== "idle") return;
+
+    const unread = stars.filter(s => !s.read);
+    if (!unread.length) {
+      // shake them up: every star is folded and new again
+      for (const s of stars) { s.read = false; s.node.style.opacity = ""; }
+      kick(1.4);
+      updateCount();
+      setHint("All folded again. Tap the jar to pick a lucky star");
+      return;
+    }
+
+    state = "busy";
+    jar.setAttribute("aria-disabled", "true");
+    kick(1);
+    openLid();
+    setTimeout(closeLid, 900);
+
+    // take one from near the top of the pile
+    unread.sort((a, b) => a.y - b.y);
+    current = unread[Math.floor(Math.random() * Math.min(3, unread.length))];
+    current.node.style.visibility = "hidden";
+
+    poppedSvg.innerHTML = "";
+    poppedSvg.appendChild(bigStar(current));
+    note.style.setProperty("--note-color", current.color);
+
+    // drift up from the jar's mouth to its place under the arch
+    popped.classList.remove("landed");
+    popped.classList.add("show");
+    const startY = jar.offsetTop + jar.clientHeight * 0.12 - popped.offsetTop - 48;
+    const flight = popped.animate([
+      { transform: `translateY(${startY}px) scale(.3) rotate(0deg)`, opacity: 0 },
+      { transform: `translateY(${startY - 16}px) scale(.4) rotate(20deg)`, opacity: 1, offset: .2 },
+      { transform: "translateY(-10px) scale(1.03) rotate(150deg)", offset: .85 },
+      { transform: "translateY(0) scale(1) rotate(180deg)" }
+    ], { duration: reduceMotion ? 1 : 1600, easing: "cubic-bezier(.25,.8,.35,1)", fill: "forwards" });
+
+    flight.onfinish = () => {
+      popped.classList.add("landed");
+      shimmer(stage.clientWidth / 2, popped.offsetTop + 48, current.color);
+      state = "popped";
+      setHint(current.kind === "golden" ? "A golden one. Tap it to unfold" : "Tap the star to unfold its message");
+      popped.focus({ preventScroll: true });
+    };
+  });
+
+  // ---- click the star: the message unfolds ----
+  let typing;
+  popped.addEventListener("click", () => {
+    if (state !== "popped") return;
+    state = "reading";
+    const msg = current.msg;
+
+    const fade = popped.animate([
+      { transform: getComputedStyle(popped).transform, opacity: 1, filter: "blur(0)" },
+      { transform: "scale(1.25) rotate(260deg)", opacity: 0, filter: "blur(6px)" }
+    ], { duration: reduceMotion ? 1 : 600, easing: "ease-in", fill: "forwards" });
+
+    fade.onfinish = () => {
+      popped.classList.remove("show", "landed");
+      fade.cancel();
+      noteLabel.hidden = current.kind !== "golden";
+      noteText.textContent = "";
+      noteWrap.classList.add("open");
+      // write the message out slowly, like ink settling
+      let i = 0;
+      clearInterval(typing);
+      if (reduceMotion) noteText.textContent = msg;
+      else setTimeout(() => {
+        typing = setInterval(() => {
+          noteText.textContent = msg.slice(0, ++i);
+          if (i >= msg.length) clearInterval(typing);
+        }, 42);
+      }, 500);
+      closeBtn.focus({ preventScroll: true });
+    };
+  });
+
+  // ---- fold it back: the strip wraps into a star and floats into the jar ----
+  async function closeNote() {
+    if (state !== "reading") return;
+    state = "folding";
+    clearInterval(typing);
+    const s = current;
+    const dur = ms => reduceMotion ? 1 : ms;
+
+    // 1. the words fade and the paper narrows into a strip
+    noteBody.animate([{ opacity: 1 }, { opacity: 0 }], { duration: dur(250), fill: "forwards" });
+    await note.animate([
+      { transform: "rotate(-1deg)" },
+      { transform: "scaleX(.85) scaleY(.1) rotate(-1deg)" }
+    ], { duration: dur(500), easing: "ease-in-out", fill: "forwards" }).finished;
+
+    // 2. the strip winds up and a star takes its place
+    const nr = note.getBoundingClientRect();
+    const fold = document.createElement("div");
+    fold.className = "fold-star";
+    fold.style.left = nr.left + nr.width / 2 - 48 + "px";
+    fold.style.top = nr.top + nr.height / 2 - 48 + "px";
+    const svg = el("svg", { viewBox: "-50 -50 100 100" });
+    svg.appendChild(bigStar(s));
+    fold.appendChild(svg);
+    document.body.appendChild(fold);
+
+    note.animate([
+      { transform: "scaleX(.85) scaleY(.1) rotate(-1deg)", opacity: 1 },
+      { transform: "scaleX(.02) scaleY(.1) rotate(220deg)", opacity: 0 }
+    ], { duration: dur(650), easing: "ease-in", fill: "forwards" });
+    await fold.animate([
+      { transform: "scale(.1) rotate(-220deg)", opacity: 0 },
+      { transform: "scale(1) rotate(0deg)", opacity: 1 }
+    ], { duration: dur(650), easing: "cubic-bezier(.3,.8,.4,1)", fill: "forwards" }).finished;
+
+    // 3. while the paper fades away, it floats up and over, and drops into the jar
+    noteWrap.classList.remove("open");
+    fold.getAnimations().forEach(a => a.cancel());
+    await flyIntoJar(fold, 96, { x: nr.left + nr.width / 2, y: nr.top + nr.height / 2, rot: 0 }, s);
+    fold.remove();
+
+    // back in the pile, slowly turning paler now that it has been read
+    s.read = true;
+    dropIntoJar(s, () => { s.node.style.opacity = ".5"; });
+    updateCount();
+
+    note.getAnimations().forEach(a => a.cancel());
+    noteBody.getAnimations().forEach(a => a.cancel());
+    current = null;
+    state = "idle";
+    jar.removeAttribute("aria-disabled");
+    setHint(stars.some(x => !x.read) ? "Tap the jar for another lucky star" : idleHint());
+    jar.focus({ preventScroll: true });
+  }
+  closeBtn.addEventListener("click", closeNote);
+  noteWrap.addEventListener("click", e => { if (e.target === noteWrap) closeNote(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeNote(); });
+
+  setTime(timeNow());
+  fillJar();
+  drawArch();
+})();
+</script>
+</body>
+</html>
