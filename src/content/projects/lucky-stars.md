@@ -27,6 +27,7 @@ Every so often a star wanders across the screen. Catch it (drag it onto the jar 
 
 - The painting follows the time of day: morning, afternoon, dusk and night. The label in the corner switches between them.
 - The jar leans toward your cursor, and the stars inside shift and settle.
+- It has sound, too: tap "sound off" in the corner for glassy clinks, paper rustles, chimes and a quiet music-box melody, all made in the browser.
 - Stars come in different papers (plain, striped, speckled, pearly), and each jar hides one rare golden star.
 - The look started from a few pictures I love: a grainy pastel print, a watercolour, and a cross-stitch pattern, which became the stitched arch around the jar.
 
