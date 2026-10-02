@@ -11,8 +11,8 @@ import { asciiBar, getBooks, getProjects, getWriting, longDate } from '../lib/ut
 
 const writing = (await getWriting()).slice(0, 5);
 const allProjects = await getProjects();
-const featured = allProjects.filter((p) => p.data.featured);
-const projects = (featured.length ? featured : allProjects).slice(0, 4);
+// the 4 newest projects (getProjects already sorts newest first)
+const projects = allProjects.slice(0, 4);
 const reading = (await getBooks()).filter((b) => b.data.shelf === 'reading');
 const [book, ...alsoReading] = reading;
 

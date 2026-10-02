@@ -63,7 +63,7 @@ status: finished       # finished | ongoing | dormant | abandoned
 role: design + code             # optional
 tools: [Figma, SwiftUI]         # optional
 link: https://example.com       # optional
-featured: true                  # show on the homepage
+featured: true                  # optional (the homepage shows your 4 newest projects)
 ---
 
 The write-up / case study goes here.
