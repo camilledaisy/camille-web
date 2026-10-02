@@ -624,6 +624,7 @@
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       ctx = new AC();
+      ctx.onstatechange = render;
       master = ctx.createGain();
       master.gain.value = 0;
       master.connect(ctx.createDynamicsCompressor()).connect(ctx.destination);
@@ -773,42 +774,72 @@
       p.oscs.forEach(o => o.stop(now() + 2));
     }
 
-    async function enable() {
+    // iPhones mute web audio while the ring/silent switch is on silent. Asking for "playback"
+    // lets it play like music does: newer Safari has a setting for that, and older versions
+    // switch over while an <audio> element is playing, so a short silent one loops quietly.
+    let keepAlive = null;
+    function silentWav() {
+      const n = 4000, b = new Uint8Array(44 + n), dv = new DataView(b.buffer);
+      const w = (o, str) => [...str].forEach((c, i) => { b[o + i] = c.charCodeAt(0); });
+      w(0, "RIFF"); dv.setUint32(4, 36 + n, true); w(8, "WAVE"); w(12, "fmt ");
+      dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+      dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true);
+      w(36, "data"); dv.setUint32(40, n, true);
+      b.fill(128, 44);
+      let bin = "";
+      b.forEach(x => { bin += String.fromCharCode(x); });
+      return "data:audio/wav;base64," + btoa(bin);
+    }
+    function playThroughSilentSwitch() {
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+      try {
+        if (!keepAlive) {
+          keepAlive = new Audio(silentWav());
+          keepAlive.loop = true;
+        }
+        const p = keepAlive.play();
+        if (p) p.catch(() => {});
+      } catch (e) {}
+    }
+
+    // must run inside a tap or key press: everything up to resume() happens right away
+    function enable() {
+      playThroughSilentSwitch();
       setup();
       if (!ctx) return;
-      await ctx.resume();
+      const resumed = ctx.resume();
+      if (resumed) resumed.catch(() => {});
       master.gain.cancelScheduledValues(now());
       master.gain.setTargetAtTime(1.35, now(), .25);
       startAmbient();
     }
 
     function render() {
-      btn.textContent = on ? "sound on" : "sound off";
+      // "tap for sound" while it's on but the browser hasn't let it start yet
+      btn.textContent = !on ? "sound off" : ctx && ctx.state === "running" ? "sound on" : "tap for sound";
       btn.setAttribute("aria-pressed", String(on));
     }
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       on = !on;
       try { localStorage.setItem(PREF, on ? "on" : "off"); } catch (e) {}
-      render();
       if (on) {
-        await enable();
-        if (ctx) [0, 2, 4].forEach((st, i) => musicBox(st + 5, i * .12, .05));
+        enable();
+        if (ctx) [0, 2, 4].forEach((st, i) => musicBox(st + 5, .08 + i * .12, .05));
       } else if (ctx) {
         master.gain.setTargetAtTime(0, now(), .12);
         stopAmbient();
+        if (keepAlive) keepAlive.pause();
         setTimeout(() => { if (!on) ctx.suspend(); }, 800);
       }
+      render();
     });
-    // remembered as on: start with the viewer's first tap or key press
-    if (on) {
-      const first = () => {
-        removeEventListener("pointerdown", first, true);
-        removeEventListener("keydown", first, true);
-        if (on) enable();
-      };
-      addEventListener("pointerdown", first, true);
-      addEventListener("keydown", first, true);
-    }
+    // Browsers only let sound start from a tap or key press, and phones pause it again when you
+    // switch apps or lock the screen. So while sound is on, any tap gets it going again.
+    // (Phones don't count the start of a touch, only a finished tap.)
+    const wakeAudio = () => {
+      if (on && (!ctx || ctx.state !== "running")) { enable(); render(); }
+    };
+    ["click", "touchend", "keydown"].forEach(type => addEventListener(type, wakeAudio, true));
     render();
 
     const play = fn => { if (on && ctx && ctx.state === "running") fn(); };
