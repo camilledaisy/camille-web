@@ -166,12 +166,11 @@
     mix-blend-mode: var(--grain-blend);
   }
 
-  /* painting label in the corner: the time of day, tap to change */
-  .time {
+  /* painting labels in the corners: sound (left) and the time of day (right) */
+  .time, .sound {
     all: unset;
     position: fixed;
     top: calc(12px + 12px);
-    right: calc(12px + 16px);
     font-family: var(--serif);
     font-style: italic;
     font-size: .95rem;
@@ -181,8 +180,10 @@
     border-radius: 3px;
     z-index: 2;
   }
-  .time:hover, .time:focus-visible { color: var(--ink); }
-  .time:focus-visible { outline: 1px dashed var(--ink-soft); }
+  .time { right: calc(12px + 16px); }
+  .sound { left: calc(12px + 16px); }
+  .time:hover, .time:focus-visible, .sound:hover, .sound:focus-visible { color: var(--ink); }
+  .time:focus-visible, .sound:focus-visible { outline: 1px dashed var(--ink-soft); }
 
   h1 {
     font-family: var(--serif);
@@ -421,6 +422,7 @@
     <div class="twinkles" id="page-twinkles"></div>
   </div>
 
+  <button class="sound" id="sound" aria-pressed="false">sound off</button>
   <button class="time" id="time" aria-label="Time of day. Tap to change."></button>
 
   <h1>Jar of Lucky Stars</h1>
@@ -608,6 +610,244 @@
     return () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
   }
 
+  // ---- sound: all synthesised in the browser, nothing to download ----
+  // Off until the viewer turns it on (browsers only allow sound after a tap anyway).
+  const sound = (() => {
+    const PREF = "lucky-stars-sound";
+    const btn = $("sound");
+    let ctx = null, master, verb, noise, on = false;
+    let ambTimer = null, pad = null, melody = 4;
+    try { on = localStorage.getItem(PREF) === "on"; } catch (e) {}
+
+    function setup() {
+      if (ctx) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0;
+      master.connect(ctx.createDynamicsCompressor()).connect(ctx.destination);
+      // a soft, roomy echo: a convolver fed a few seconds of fading noise
+      verb = ctx.createConvolver();
+      const len = ctx.sampleRate * 3, ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) {
+        const d = ir.getChannelData(c);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+      }
+      verb.buffer = ir;
+      const wet = ctx.createGain();
+      wet.gain.value = .45;
+      verb.connect(wet).connect(master);
+      noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      const n = noise.getChannelData(0);
+      for (let i = 0; i < n.length; i++) n[i] = Math.random() * 2 - 1;
+    }
+
+    const now = () => ctx.currentTime;
+    function send(node, wet) {
+      node.connect(master);
+      const w = ctx.createGain();
+      w.gain.value = wet;
+      node.connect(w).connect(verb);
+    }
+
+    // a struck glass or bell: a few sine partials that ring and fade
+    function bell(freq, { at = 0, vol = .1, decay = 1.6, partials = [[1, 1], [2.76, .3], [5.4, .1]], wet = .5 } = {}) {
+      const t = now() + at;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + .005);
+      g.gain.exponentialRampToValueAtTime(.0001, t + decay);
+      send(g, wet);
+      for (const [ratio, amp] of partials) {
+        const o = ctx.createOscillator(), pg = ctx.createGain();
+        o.frequency.value = freq * ratio;
+        pg.gain.value = amp;
+        o.connect(pg).connect(g);
+        o.start(t);
+        o.stop(t + decay + .05);
+      }
+    }
+
+    // filtered noise: air, or paper when it crackles
+    function hiss({ at = 0, dur = .5, vol = .05, freq = 2500, to = freq, q = .8, crackle = 0, wet = .3 } = {}) {
+      const t = now() + at;
+      const src = ctx.createBufferSource();
+      src.buffer = noise;
+      src.loop = true;
+      const f = ctx.createBiquadFilter();
+      f.type = "bandpass";
+      f.Q.value = q;
+      f.frequency.setValueAtTime(freq, t);
+      f.frequency.exponentialRampToValueAtTime(to, t + dur);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      if (crackle) {
+        for (let k = t; k < t + dur; k += .012 + Math.random() * crackle) {
+          g.gain.setValueAtTime(vol * (.25 + Math.random() * .75), k);
+          g.gain.exponentialRampToValueAtTime(vol * .04, k + .015 + Math.random() * .03);
+        }
+        g.gain.linearRampToValueAtTime(0, t + dur + .04);
+      } else {
+        g.gain.linearRampToValueAtTime(vol, t + dur * .45);
+        g.gain.linearRampToValueAtTime(0, t + dur);
+      }
+      src.connect(f).connect(g);
+      send(g, wet);
+      src.start(t, Math.random());
+      src.stop(t + dur + .1);
+    }
+
+    // a soft knock, for the lid
+    function tock(freq, vol) {
+      const t = now();
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(freq, t);
+      o.frequency.exponentialRampToValueAtTime(freq * .6, t + .12);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + .003);
+      g.gain.exponentialRampToValueAtTime(.0001, t + .18);
+      o.connect(g);
+      send(g, .2);
+      o.start(t);
+      o.stop(t + .2);
+      hiss({ dur: .04, vol: vol * .4, freq: 1800, q: 1, wet: .1 });
+    }
+
+    // a gentle pentatonic scale whose key follows the time of day (lower at night)
+    const SCALE = [0, 2, 4, 7, 9];
+    const KEY = { morning: 587.33, afternoon: 523.25, dusk: 440, night: 392 };
+    const base = () => KEY[root.dataset.time] || KEY.afternoon;
+    const note = step => base() * Math.pow(2, Math.floor(step / 5) + SCALE[((step % 5) + 5) % 5] / 12);
+    const musicBox = (step, at = 0, vol = .035) =>
+      bell(note(step), { at, vol, decay: 2.4, partials: [[1, 1], [2, .2], [4.02, .05]], wet: .75 });
+    const ticks = (n, spread, vol) => {
+      for (let i = 0; i < n; i++) {
+        bell(2600 + Math.random() * 2000, { at: .04 + Math.random() * spread, vol, decay: .22, partials: [[1, 1]], wet: .15 });
+      }
+    };
+
+    // ambience: a quiet pad and a slow, wandering music-box melody
+    const PAD = [.25, .375, .5];
+    function startAmbient() {
+      if (ambTimer || !ctx) return;
+      const f = ctx.createBiquadFilter();
+      f.type = "lowpass";
+      f.frequency.value = 650;
+      const g = ctx.createGain();
+      g.gain.value = 0;
+      g.gain.setTargetAtTime(.028, now(), 2.5);
+      const lfo = ctx.createOscillator(), depth = ctx.createGain();
+      lfo.frequency.value = .07;
+      depth.gain.value = .01;
+      lfo.connect(depth).connect(g.gain);
+      lfo.start();
+      const oscs = PAD.map(r => {
+        const o = ctx.createOscillator();
+        o.type = "triangle";
+        o.frequency.value = base() * r;
+        o.detune.value = (Math.random() - .5) * 12;
+        o.connect(f);
+        o.start();
+        return o;
+      });
+      f.connect(g);
+      send(g, .6);
+      pad = { g, oscs: [...oscs, lfo] };
+      const tick = () => {
+        melody = Math.max(0, Math.min(9, melody + Math.round((Math.random() - .5) * 4)));
+        musicBox(melody + 5);
+        if (Math.random() < .25) musicBox(melody + 7, .28, .025);
+        ambTimer = setTimeout(tick, 1800 + Math.random() * 2600);
+      };
+      ambTimer = setTimeout(tick, 800);
+    }
+    function stopAmbient() {
+      clearTimeout(ambTimer);
+      ambTimer = null;
+      if (!pad) return;
+      const p = pad;
+      pad = null;
+      p.g.gain.setTargetAtTime(0, now(), .3);
+      p.oscs.forEach(o => o.stop(now() + 2));
+    }
+
+    async function enable() {
+      setup();
+      if (!ctx) return;
+      await ctx.resume();
+      master.gain.cancelScheduledValues(now());
+      master.gain.setTargetAtTime(1.35, now(), .25);
+      startAmbient();
+    }
+
+    function render() {
+      btn.textContent = on ? "sound on" : "sound off";
+      btn.setAttribute("aria-pressed", String(on));
+    }
+    btn.addEventListener("click", async () => {
+      on = !on;
+      try { localStorage.setItem(PREF, on ? "on" : "off"); } catch (e) {}
+      render();
+      if (on) {
+        await enable();
+        if (ctx) [0, 2, 4].forEach((st, i) => musicBox(st + 5, i * .12, .05));
+      } else if (ctx) {
+        master.gain.setTargetAtTime(0, now(), .12);
+        stopAmbient();
+        setTimeout(() => { if (!on) ctx.suspend(); }, 800);
+      }
+    });
+    // remembered as on: start with the viewer's first tap or key press
+    if (on) {
+      const first = () => {
+        removeEventListener("pointerdown", first, true);
+        removeEventListener("keydown", first, true);
+        if (on) enable();
+      };
+      addEventListener("pointerdown", first, true);
+      addEventListener("keydown", first, true);
+    }
+    render();
+
+    const play = fn => { if (on && ctx && ctx.state === "running") fn(); };
+    return {
+      jarTap: () => play(() => {
+        bell(1650 + Math.random() * 250, { vol: .06, decay: .9, partials: [[1, 1], [2.4, .35], [4.1, .12]], wet: .35 });
+        ticks(5, .35, .02);
+      }),
+      shake: () => play(() => {
+        bell(1500, { vol: .05, decay: .8, partials: [[1, 1], [2.4, .35]], wet: .35 });
+        ticks(14, .9, .02);
+      }),
+      lidOpen: () => play(() => tock(300, .1)),
+      lidClose: () => play(() => tock(235, .13)),
+      starOut: golden => play(() => {
+        hiss({ dur: 1.2, vol: .035, freq: 700, to: 3200, q: 1.2, wet: .6 });
+        [0, 2, 4].concat(golden ? [7, 9] : []).forEach((st, i) => musicBox(st + 5, .35 + i * .14, .05));
+      }),
+      unfold: golden => play(() => {
+        hiss({ dur: .7, vol: .07, freq: 3000, q: .6, crackle: .05, wet: .2 });
+        if (golden) [0, 4, 7, 9, 12].forEach((st, i) => musicBox(st + 5, .3 + i * .09, .04));
+      }),
+      fold: () => play(() => hiss({ dur: .55, vol: .06, freq: 2600, q: .6, crackle: .04, wet: .2 })),
+      flyIn: () => play(() => hiss({ dur: 1.5, vol: .03, freq: 2600, to: 800, q: 1, wet: .6 })),
+      land: () => play(() => {
+        bell(2100 + Math.random() * 900, { vol: .045, decay: .5, partials: [[1, 1], [2.7, .3]], wet: .3 });
+        ticks(3, .2, .015);
+      }),
+      wanderer: () => play(() => musicBox(14, 0, .03)),
+      caught: () => play(() => { musicBox(9); musicBox(12, .13); }),
+      twinkle: () => play(() => {
+        if (Math.random() < .05) bell(note(10 + Math.floor(Math.random() * 5)), { vol: .01, decay: 1.6, partials: [[1, 1]], wet: .9 });
+      }),
+      retune: () => {
+        if (pad) pad.oscs.slice(0, PAD.length).forEach((o, i) => o.frequency.setTargetAtTime(base() * PAD[i], now(), 1.5));
+      }
+    };
+  })();
+
   // ---- paint dabs and night stars onto the paper ----
   (function paintPaper() {
     const r = rng(7);
@@ -652,13 +892,15 @@
         t.style.top = y - size / 2 + "px";
         t.style.width = t.style.height = size + "px";
         const rot = Math.random() * 45;
+        const duration = 1600 + Math.random() * 2000, delay = (first ? 0 : 200) + Math.random() * 1600;
+        setTimeout(sound.twinkle, delay + duration * .45);
         t.animate([
           { opacity: 0, transform: `scale(.15) rotate(${rot}deg)` },
           { opacity: .95, transform: `scale(1) rotate(${rot + 30}deg)`, offset: .45 },
           { opacity: 0, transform: `scale(.15) rotate(${rot + 70}deg)` }
         ], {
-          duration: 1600 + Math.random() * 2000,
-          delay: (first ? 0 : 200) + Math.random() * 1600,
+          duration,
+          delay,
           easing: "ease-in-out",
           fill: "both"
         }).onfinish = () => run(false);
@@ -771,6 +1013,7 @@
     if (t === "night") starsGlow.setAttribute("filter", "url(#nightglow)");
     else starsGlow.removeAttribute("filter");
     requestAnimationFrame(drawArch);
+    sound.retune();
   }
   timeBtn.addEventListener("click", () => {
     timeChosen = true;
@@ -931,7 +1174,7 @@
         y = d.dy * (1 - q * q);
         rot = d.spin * (1 - q);
         if (q >= 1) {
-          if (!d.landed) { d.landed = true; kick(.22); }
+          if (!d.landed) { d.landed = true; kick(.22); sound.land(); }
           const k = (p - .72) / .28;
           y -= Math.sin(k * Math.PI) * 3.5 * (1 - k * .5);
           rot += Math.sin(k * Math.PI * 2) * 6 * (1 - k);
@@ -976,11 +1219,13 @@
   // ---- the lid lifts to let a star in or out ----
   function openLid() {
     if (reduceMotion) return;
+    sound.lidOpen();
     lid.animate([{ transform: "translate(-4px, -30px) rotate(-18deg)" }],
       { duration: 480, easing: "cubic-bezier(.3, 1.35, .5, 1)", fill: "forwards" });
   }
   function closeLid() {
     if (reduceMotion) return;
+    sound.lidClose();
     lid.animate([{ transform: "translate(0, 0) rotate(0deg)" }],
       { duration: 520, easing: "cubic-bezier(.5, 0, .45, 1.25)", fill: "forwards" });
   }
@@ -1115,6 +1360,7 @@
     let grab = { dx: 0, dy: 0, sx: 0, sy: 0, moved: false };
 
     if (state === "idle") setHint("A star is wandering by. Catch it for the jar");
+    sound.wanderer();
 
     const place = () => { w.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rot.toFixed(1)}deg)`; };
 
@@ -1157,6 +1403,7 @@
       w.classList.remove("held");
       jar.classList.remove("receiving");
 
+      sound.caught();
       // it gets its place in the pile now, and appears there once it has flown in
       const s = addJarStar(def);
       s.node.style.visibility = "hidden";
@@ -1220,6 +1467,7 @@
       // shake them up: every star is folded and new again
       for (const s of stars) { s.read = false; s.node.style.opacity = ""; }
       kick(1.4);
+      sound.shake();
       updateCount();
       setHint("All folded again. Tap the jar to pick a lucky star");
       return;
@@ -1235,6 +1483,8 @@
     unread.sort((a, b) => a.y - b.y);
     current = unread[Math.floor(Math.random() * Math.min(3, unread.length))];
     current.node.style.visibility = "hidden";
+    sound.jarTap();
+    sound.starOut(current.kind === "golden");
 
     poppedSvg.innerHTML = "";
     poppedSvg.appendChild(bigStar(current));
@@ -1278,6 +1528,7 @@
       noteLabel.hidden = current.kind !== "golden";
       noteText.textContent = "";
       noteWrap.classList.add("open");
+      sound.unfold(current.kind === "golden");
       // write the message out slowly, like ink settling
       let i = 0;
       clearInterval(typing);
@@ -1299,6 +1550,7 @@
     clearInterval(typing);
     const s = current;
     const dur = ms => reduceMotion ? 1 : ms;
+    sound.fold();
 
     // 1. the words fade and the paper narrows into a strip
     noteBody.animate([{ opacity: 1 }, { opacity: 0 }], { duration: dur(250), fill: "forwards" });
@@ -1330,6 +1582,7 @@
     // 3. while the paper fades away, it floats up and over, and drops into the jar
     noteWrap.classList.remove("open");
     fold.getAnimations().forEach(a => a.cancel());
+    sound.flyIn();
     await flyIntoJar(fold, 96, { x: nr.left + nr.width / 2, y: nr.top + nr.height / 2, rot: 0 }, s);
     fold.remove();
 
